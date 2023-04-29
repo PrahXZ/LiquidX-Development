@@ -16,20 +16,14 @@ import net.ccbluex.liquidbounce.features.value.*
 class Timer : Module() {
 
     private val speedValue = FloatValue("Speed", 2F, 0.1F, 24F)
-    private val verusValue = BoolValue("Verus", false);
     private val onMoveValue = BoolValue("OnMove", true)
 
-    override fun onEnable() {
-        if(verusValue.get()) LiquidBounce.moduleManager[ABlink::class.java]!!.state = true
-    }
 
     override fun onDisable() {
         if (mc.thePlayer == null) {
             return
         }
-
         mc.timer.timerSpeed = 1F
-        if(verusValue.get())  LiquidBounce.moduleManager[ABlink::class.java]!!.state = false
     }
 
     @EventTarget
@@ -38,10 +32,9 @@ class Timer : Module() {
             mc.timer.timerSpeed = speedValue.get()
             return
         }
-
         mc.timer.timerSpeed = 1F
     }
 
     override val tag: String?
-        get() = "${speedValue.get().toString()}"
+        get() = "${speedValue.get()}"
 }

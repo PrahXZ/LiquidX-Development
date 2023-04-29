@@ -32,7 +32,7 @@ class Notifications(x: Double = 0.0, y: Double = 0.0, scale: Float = 1F,side: Si
     private val whiteText = BoolValue("WhiteTextColor", true)
     private val modeColored = BoolValue("CustomModeColored", true)
     companion object {
-        val styleValue = ListValue("Mode", arrayOf("Classic", "FDP", "Modern", "Tenacity", "Intellij", "Skid"), "Modern")
+        val styleValue = ListValue("Mode", arrayOf("Classic", "Modern", "Tenacity", "Intellij"), "Modern")
     }
 
     /**
@@ -249,71 +249,7 @@ class Notification(
             font.DisplayFont2(font, content, 4F, 10F, textColor, contentShadow)
             return false
         }
-        
-        if (style.equals("FDP")) {
 
-            if (blurRadius != 0f) {
-                BlurUtils.draw(4 + (x + transX).toFloat() * scale, (y + transY).toFloat() * scale, (width * scale), (27f - 5f) * scale, blurRadius)
-            }
-            
-            val colors = Color(0, 0, 0, alpha / 4)
-            
-            if (motionBlur) {
-                when (fadeState) {
-                    FadeState.IN -> {
-                        RenderUtils.drawRoundedCornerRect(3f, 0F, width.toFloat() + 5f, 27f - 5f, 2f, colors.rgb)
-                        RenderUtils.drawRoundedCornerRect(3F, 0F, width.toFloat() + 5f, 27f - 5f, 2f, colors.rgb)
-                    }
-
-                    FadeState.STAY -> {
-                        RenderUtils.drawRoundedCornerRect(3f, 0F, width.toFloat() + 5f, 27f - 5f, 2f, colors.rgb)
-                        RenderUtils.drawRoundedCornerRect(3F, 0F, width.toFloat() + 5f, 27f - 5f, 2f, colors.rgb)
-                    }
-
-                    FadeState.OUT -> {
-                        RenderUtils.drawRoundedCornerRect(4F, 0F, width.toFloat() + 5f, 27f - 5f, 2f, colors.rgb)
-                        RenderUtils.drawRoundedCornerRect(5F, 0F, width.toFloat() + 5f, 27f - 5f, 2f, colors.rgb)
-                    }
-                }
-            } else {
-                RenderUtils.drawRoundedCornerRect(0F + 3f, 0F, width.toFloat() + 5f, 27f - 5f, 2f, colors.rgb)
-                RenderUtils.drawRoundedCornerRect(0F + 3f, 0F, width.toFloat() + 5f, 27f - 5f, 2f, colors.rgb)
-            }
-            RenderUtils.drawRoundedCornerRect(0F + 3f, 0F, width.toFloat() + 5f, 27f - 5f, 2f, colors.rgb)
-            RenderUtils.drawRoundedCornerRect(0F + 3f, 0F, max(width - width * ((nowTime - displayTime) / (animeTime * 2F + time)) + 5f, 0F), 27f - 5f, 2f, Color(0, 0, 0, 40).rgb)
-            FontLoaders.C12.DisplayFont2(FontLoaders.C12, title, 4F, 3F, textColor, titleShadow)
-            font.DisplayFont2(font, content, 4F, 10F, textColor, contentShadow)
-            return false
-        }
-
-        // lbtl means liquidbounce text length
-        /* if(style.equals("LiquidBounce")) {
-            RenderUtils.drawRect(-1F, 0F, lbtl + 9F, -20F, Color(0, 0, 0, alpha))
-            FontLoaders.C12.DisplayFont2(FontLoaders.C12, title + ": " + content, -4F, 3F, textColor, titleShadow)
-            RenderUtils.drawRect(-1F + max(lbtl + 5F - (lbtl+ 5F) * ((nowTime - displayTime) / (animeTime * 2F + time)), 0F), 0F, 4F + max(lbtl + 5F - (lbtl+ 5F) * ((nowTime - displayTime) / (animeTime * 2F + time)), 0F), -20F, Color(0, 0, 0, alpha))
-            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
-        } yo so dg, WTF */
-
-
-        /*  
-        if(style.equals("Simple")) {
-            RenderUtils.customRoundedinf(-x + 8F + lbtl, -y, -x - 2F, -18F - y, 0F, 3F, 3F, 0F, Color(0,0,0, alpha).rgb)
-            RenderUtils.customRoundedinf(-x - 2F, -y, -x - 5F, -18F - y, 3F, 0F, 0F, 3F, type.renderColor)
-            Fonts.font40.drawString("$title: $content", -x + 3, -13F - y, -1)
-            }  */
-
-        if(style.equals("Skid")){
-
-            val colors=Color(type.renderColor.red,type.renderColor.green,type.renderColor.blue,alpha/3)
-            RenderUtils.drawRect(2.0, 0.0, 4.0, 27f - 5.0, colors.rgb)
-            RenderUtils.drawRect(3F, 0F, width.toFloat() + 5f, 27f - 5f, Color(0,0,0,150))
-            RenderUtils.drawGradientSidewaysH(3.0, 0.0, 20.0, 27f - 5.0, colors.rgb, Color(0,0,0,0).rgb)
-            RenderUtils.drawRect(2f, 27f-6f, max(width - width * ((nowTime - displayTime) / (animeTime * 2F + time))+5f, 0F), 27f - 5f ,Color(52, 97, 237).rgb)
-
-            FontLoaders.C12.DisplayFont2(FontLoaders.C12,title, 4F, 3F, textColor,titleShadow)
-            font.DisplayFont2(font,content, 4F, 10F, textColor,contentShadow)
-            return false
-            }
 
         if(style.equals("Tenacity")){ 
         val fontRenderer = Fonts.font35
@@ -421,16 +357,6 @@ enum class NotifyType(var renderColor: Color) {
     WARNING(Color(0xF5FD00)),
     INFO(Color(0x6490A7));
 }
-    //classic
-   // SUCCESS(Color((0x60E092)),
-   // ERROR(Color(0xFF2F2F)),
-   // WARNING(Color(0xF5FD00)),
-   // INFO(Color( 0x6490A7)));
-   //modern (shitty)
-   //    SUCCESS(Color(0x36D399)),
-   // ERROR(Color(0xF87272)),
-   // WARNING(Color(0xFBBD23)),
-   // INFO(Color(0xF2F2F2));
 
 
 enum class FadeState { IN, STAY, OUT, END }

@@ -36,7 +36,6 @@ class AutoWeapon : Module() {
                 attackEnemy) {
             attackEnemy = false
 
-            // Find best weapon in hotbar (#Kotlin Style)
             val (slot, _) = (0..8)
                 .map { Pair(it, mc.thePlayer.inventory.getStackInSlot(it)) }
                 .filter { it.second != null && (it.second.item is ItemSword || (it.second.item is ItemTool && !onlySwordValue.get())) }
@@ -49,7 +48,6 @@ class AutoWeapon : Module() {
                 return
             }
 
-            // Switch to best weapon
             if (silentValue.get()) {
                 mc.netHandler.addToSendQueue(C09PacketHeldItemChange(slot))
                 spoofedSlot = ticksValue.get()
@@ -66,7 +64,6 @@ class AutoWeapon : Module() {
 
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
-        // Switch back to old item after some time
         if (spoofedSlot > 0) {
             if (spoofedSlot == 1) {
                 mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))

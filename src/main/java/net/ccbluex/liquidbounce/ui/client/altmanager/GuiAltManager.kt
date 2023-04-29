@@ -8,7 +8,6 @@ import net.ccbluex.liquidbounce.ui.client.altmanager.sub.GuiAdd
 import net.ccbluex.liquidbounce.ui.client.altmanager.sub.GuiDirectLogin
 import net.ccbluex.liquidbounce.ui.client.altmanager.sub.GuiMicrosoftLoginPending
 import net.ccbluex.liquidbounce.ui.i18n.LanguageManager
-import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.extensions.drawCenteredString
 import net.ccbluex.liquidbounce.utils.login.LoginUtils
 import net.minecraft.client.Minecraft
@@ -17,7 +16,6 @@ import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.GuiSlot
 import net.minecraft.client.gui.GuiTextField
 import net.minecraft.util.Session
-import org.apache.commons.codec.language.bm.Lang
 import org.lwjgl.input.Keyboard
 import java.awt.Color
 import java.util.*
@@ -195,7 +193,7 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
         var randomAltField = GuiTextField(2, Minecraft.getMinecraft().fontRendererObj, 0, 0, 0, 0)
 
         init {
-            randomAltField.text = "LXUsr_%n%s%n%s"
+            randomAltField.text = "%n%s%n%s%n%s%n%s%n%s"
             randomAltField.maxStringLength = Int.MAX_VALUE
         }
 

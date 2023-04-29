@@ -9,21 +9,13 @@ import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
 import net.ccbluex.liquidbounce.utils.MovementUtils
 import net.ccbluex.liquidbounce.utils.RotationUtils
-import net.ccbluex.liquidbounce.utils.render.ColorManager
-import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.features.value.*
 import net.minecraft.entity.Entity
-import net.minecraft.entity.EntityLivingBase
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.MathHelper
 import org.lwjgl.input.Keyboard
-import org.lwjgl.opengl.GL11
-import java.awt.Color
-import java.util.*
-import kotlin.math.cos
-import kotlin.math.sin
 
-@ModuleInfo(name = "TargetStrafe", category = ModuleCategory.PLAYER)
+@ModuleInfo(name = "TargetStrafe",  category = ModuleCategory.MOVEMENT)
 class TargetStrafe : Module() {
     val range = FloatValue("Range", 2.0f, 0.1f, 4.0f).displayable { !behind.get() }
     private val modeValue = ListValue("KeyMode", arrayOf("Jump", "None"), "Jump")
@@ -67,40 +59,40 @@ class TargetStrafe : Module() {
     @EventTarget
     fun onMove(event: MoveEvent) {
         if (canStrafe) {
-            strafe(event, MovementUtils.getSpeed().toDouble())
+            strafe(event, MovementUtils.getSpeed().toInt())
 
             if (safewalk.get() && checkVoid() && !flight!!.state)
                 event.isSafeWalk = true
         }
     }
 
-    fun strafe(event: MoveEvent, moveSpeed: Double) {
+    fun strafe(event: MoveEvent, moveSpeed: Int) {
         if (killAura?.target == null) return
         val target = killAura.target
 
-        val rotYaw = RotationUtils.getRotationsEntity(killAura.target).yaw
+        val rotYaw = RotationUtils.getRotationsEntity(killAura.target!!).yaw
 
         if (mc.thePlayer.getDistanceToEntity(target) <= 1.5)
-            MovementUtils.setSpeed(event, moveSpeed.toInt(), rotYaw, direction.toDouble(), 0.0)
+            MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 0.0)
         else
-            MovementUtils.setSpeed(event, moveSpeed.toInt(), rotYaw, direction.toDouble(), 1.0)
+            MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 1.0)
 
         if (behind.get()) {
             val xPos: Double = target!!.posX + -Math.sin(Math.toRadians(target.rotationYaw.toDouble())) * -2
             val zPos: Double = target.posZ + Math.cos(Math.toRadians(target.rotationYaw.toDouble())) * -2
-            event.x = (moveSpeed * -MathHelper.sin(
+            event.x = ((moveSpeed * -MathHelper.sin(
                     Math.toRadians(RotationUtils.getRotations1(xPos, target.posY, zPos)[0].toDouble())
                             .toFloat()
-            ))
-            event.z = (moveSpeed * MathHelper.cos(
+            )).toDouble())
+            event.z = ((moveSpeed * MathHelper.cos(
                     Math.toRadians(RotationUtils.getRotations1(xPos, target.posY, zPos)[0].toDouble())
                             .toFloat()
-            ))
+            )).toDouble())
         } else {
             if (mc.thePlayer.getDistanceToEntity(target) <= range.get())
-                MovementUtils.setSpeed(event, moveSpeed.toInt(), rotYaw, direction.toDouble(), 0.0)
+                MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 0.0)
             else
-                MovementUtils.setSpeed(event, moveSpeed.toInt(), rotYaw, direction.toDouble(), 1.0)
+                MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 1.0)
         }
     }
 

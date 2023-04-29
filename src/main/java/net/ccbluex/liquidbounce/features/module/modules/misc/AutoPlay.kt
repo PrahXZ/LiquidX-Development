@@ -295,9 +295,6 @@ class AutoPlay : Module() {
         }
     }
 
-    fun onUpdate(event: UpdateEvent) {
-    }
-
     @EventTarget
     fun onWorld(event: WorldEvent) {
         clicking = false

@@ -38,31 +38,31 @@ class HitEffect : Module() {
 
     @EventTarget
     fun onKilled(event: EntityKilledEvent) {
-        if(timingValue.equals("Kill")) { // the CombatManager has checked if the entity is selected, we don't need to check it again
+        if(timingValue.equals("Kill")) {
             displayEffectFor(event.targetEntity)
         }
     }
 
     private fun displayEffectFor(entity: EntityLivingBase) {
         repeat(timesValue.get()) {
-            when(modeValue.get().lowercase()) {
-                "lighting" -> {
+            when(modeValue.get()) {
+                "Lighting" -> {
                     mc.netHandler.handleSpawnGlobalEntity(S2CPacketSpawnGlobalEntity(EntityLightningBolt(mc.theWorld, entity.posX, entity.posY, entity.posZ)))
                     if(lightingSoundValue.get()) {
                         mc.soundHandler.playSound(PositionedSoundRecord.create(ResourceLocation("random.explode"), 1.0f))
                         mc.soundHandler.playSound(PositionedSoundRecord.create(ResourceLocation("ambient.weather.thunder"), 1.0f))
                     }
                 }
-                "blood" -> {
+                "Blood" -> {
                     repeat(10) {
                         mc.effectRenderer.spawnEffectParticle(EnumParticleTypes.BLOCK_CRACK.particleID, entity.posX, entity.posY + entity.height / 2, entity.posZ,
                             entity.motionX + RandomUtils.nextFloat(-0.5f, 0.5f), entity.motionY + RandomUtils.nextFloat(-0.5f, 0.5f), entity.motionZ + RandomUtils.nextFloat(-0.5f, 0.5f), blockState)
                     }
                 }
-                "fire" ->
+                "Fire" ->
                     mc.effectRenderer.emitParticleAtEntity(entity, EnumParticleTypes.LAVA)
-                "critical" -> mc.effectRenderer.emitParticleAtEntity(entity, EnumParticleTypes.CRIT)
-                "magiccritical" -> mc.effectRenderer.emitParticleAtEntity(entity, EnumParticleTypes.CRIT_MAGIC)
+                "Critical" -> mc.effectRenderer.emitParticleAtEntity(entity, EnumParticleTypes.CRIT)
+                "MagicCritical" -> mc.effectRenderer.emitParticleAtEntity(entity, EnumParticleTypes.CRIT_MAGIC)
             }
         }
     }

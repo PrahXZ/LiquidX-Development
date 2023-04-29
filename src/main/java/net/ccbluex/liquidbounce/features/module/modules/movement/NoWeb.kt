@@ -13,7 +13,7 @@ import net.ccbluex.liquidbounce.features.value.*
 @ModuleInfo(name = "NoWeb", category = ModuleCategory.MOVEMENT)
 class NoWeb : Module() {
 
-    private val modeValue = ListValue("Mode", arrayOf("None", "OldAAC", "LAAC", "Rewinside", "Horizon", "Spartan", "AAC4", "AAC5", "Matrix", "Test"), "None")
+    private val modeValue = ListValue("Mode", arrayOf("None", "OldAAC", "LAAC", "Rewinside", "Horizon", "Spartan", "AAC4", "AAC5", "Matrix"), "None")
     private val horizonSpeed = FloatValue("HorizonSpeed", 0.1F, 0.01F, 0.8F)
 
     private var usedTimer = false
@@ -92,17 +92,6 @@ class NoWeb : Module() {
 
                 if (mc.thePlayer.onGround) {
                     mc.thePlayer.jump()
-                }
-            }
-            "test" -> {
-                if (mc.thePlayer.ticksExisted % 7 == 0) {
-                    mc.thePlayer.jumpMovementFactor = 0.42f
-                }
-                if (mc.thePlayer.ticksExisted % 7 == 1) {
-                    mc.thePlayer.jumpMovementFactor = 0.33f
-                }
-                if (mc.thePlayer.ticksExisted % 7 == 2) {
-                    mc.thePlayer.jumpMovementFactor = 0.08f
                 }
             }
             "rewinside" -> {

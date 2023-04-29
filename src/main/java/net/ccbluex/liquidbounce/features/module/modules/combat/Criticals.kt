@@ -127,12 +127,6 @@ class Criticals : Module() {
             if (debugValue.get()) {
                 alert("FLAG")
             }
-            /*
-            if (s08FlagValue.get()) {
-                jState = 0
-            }
-
-             */
         }
 
         if (packet is C03PacketPlayer && (MovementUtils.isMoving() || syncTimer.hasTimePassed(1000L) || msTimer.hasTimePassed(
@@ -206,9 +200,8 @@ class Criticals : Module() {
     }
 
 
-        /**
-     * 读取mode中的value并和本体中的value合并
-     * 所有的value必须在这个之前初始化
+    /**
+     * Values Mode
      */
     override val values = super.values.toMutableList().also { modes.map { mode -> mode.values.forEach { value -> it.add(value.displayable { modeValue.equals(mode.modeName) }) } } }
 }

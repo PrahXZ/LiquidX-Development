@@ -13,25 +13,20 @@ import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils.*
-import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.features.value.*
 import net.minecraft.client.renderer.GlStateManager.resetColor
 import net.minecraft.entity.EntityLivingBase
 import org.lwjgl.opengl.GL11.*
 import java.awt.Color
 import java.text.DecimalFormat
-import kotlin.math.roundToInt
 
 @ModuleInfo(name = "FollowTargetHud", category = ModuleCategory.RENDER)
 class FollowTargetHud : Module() {
     private val zoomIn = BoolValue("ZoomIn", true)
     private val zoomTicks = IntegerValue("ZoomInTicks", 4, 2, 15).displayable {zoomIn.get()}
-    private val modeValue = ListValue("Mode", arrayOf("Juul", "Jello", "Material", "Material2", "Arris", "FDP"), "Juul")
+    private val modeValue = ListValue("Mode", arrayOf("Juul", "Jello", "Material", "Material2", "Arris"), "Juul")
     private val fontValue = FontValue("Font", Fonts.font40)
     private val materialShadow = BoolValue("MaterialShadow", false).displayable {modeValue.equals("Material") || modeValue.equals("Material2")}
-    private val fdpVertical = BoolValue("FDPVertical", false).displayable {modeValue.equals("FDP")}
-    private val fdpText = BoolValue("FDPDrawText", true).displayable {modeValue.equals("FDP") && !fdpVertical.get()}
-    private val fdpRed = BoolValue("FDPRed", false).displayable {modeValue.equals("FDP")}
     private val smoothMove = BoolValue("SmoothHudMove", true)
     private val smoothValue = FloatValue("SmoothHudMoveValue", 5.2f, 1f, 8f).displayable { smoothMove.get() }
     private val smoothRot = BoolValue("SmoothHudRotations", true)
@@ -107,7 +102,7 @@ class FollowTargetHud : Module() {
             targetTicks--
             if (targetTicks <= -1) {
                 targetTicks = 0
-                entityKeep = "dg636 top"
+                entityKeep = "Prah top"
             }
         }
 
@@ -260,42 +255,6 @@ class FollowTargetHud : Module() {
                 val yPos = 5 + font.FONT_HEIGHT + 3f
                 drawRect(40f + xChange, yPos,     40 + xChange + (healthPercent) * additionalWidth, yPos + 4, Color.GREEN.rgb)
                 drawRect(40f + xChange, yPos + 9, 40 + xChange + (entity.totalArmorValue / 20F) * additionalWidth, yPos + 13, Color(77, 128, 255).rgb)   
-            }
-            
-            "fdp" -> {
-                
-                val font = fontValue.get()
-                glScalef(-scale * 2, -scale * 2, scale * 2)
-                
-                if (!fdpVertical.get()) {
-                    var addedLen = (60 + font.getStringWidth(entity.name) * 1.60f).toFloat()
-                    if (!fdpText.get()) addedLen = 110f
-                    
-                    if (fdpRed.get()) {
-                        RenderUtils.drawRect(0f + xChange, 0f, addedLen + xChange, 47f, Color(212, 63, 63, 90).rgb)
-                        RenderUtils.drawRoundedCornerRect(0f + xChange, 0f, healthPercent * addedLen + xChange, 47f, 3f, Color(245, 52, 27, 90).rgb)
-                    } else {
-                        RenderUtils.drawRect(0f + xChange, 0f, addedLen + xChange, 47f, Color(0, 0, 0, 120).rgb)
-                        RenderUtils.drawRoundedCornerRect(0f + xChange, 0f, healthPercent * addedLen + xChange, 47f, 3f, Color(0, 0, 0, 90).rgb)
-                    }
-
-                    drawShadow(0f, 0f, addedLen + xChange, 47f)
-        
-                    if (fdpText.get()) {
-        
-                        fontRenderer.drawString(entity.name, 45 + xChange.toInt(), 8, Color.WHITE.rgb)
-                        fontRenderer.drawString("Health ${entity.health.roundToInt()}", 45 + xChange.toInt(), 11 + (font.FONT_HEIGHT).toInt(), Color.WHITE.rgb)
-                    }
-                } else {
-                    if (fdpRed.get()) {
-                        RenderUtils.drawRect(0f + xChange, 0f, 47f + xChange, 120f + xChange, Color(212, 63, 63, 90).rgb)
-                        RenderUtils.drawRoundedCornerRect(healthPercent*120f + xChange, 0f, 47f + xChange, 0f, 3f, Color(245, 52, 27, 90).rgb)
-                    } else {
-                        RenderUtils.drawRect(0f + xChange, 0f, 47f + xChange, 120f, Color(0, 0, 0, 120).rgb)
-                        RenderUtils.drawRoundedCornerRect(0f + xChange, 0f, 47f + xChange, healthPercent * 120f, 3f, Color(0, 0, 0, 90).rgb)
-                    }
-                }
-                
             }
 
             "jello" -> {

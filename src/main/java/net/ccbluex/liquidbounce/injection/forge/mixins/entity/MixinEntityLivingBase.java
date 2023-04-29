@@ -4,7 +4,7 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.entity;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.JumpEvent;
 import net.ccbluex.liquidbounce.features.module.modules.client.Animations;
-import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
+import net.ccbluex.liquidbounce.features.module.modules.combat.OldKillAura;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.ViaVersionFix;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Jesus;
 import net.ccbluex.liquidbounce.features.module.modules.movement.NoJumpDelay;
@@ -86,7 +86,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
         if (this.isSprinting()) {
             final Sprint sprint = LiquidBounce.moduleManager.getModule(Sprint.class);
             float fixedYaw = this.rotationYaw;
-            final KillAura killAura = LiquidBounce.moduleManager.getModule(KillAura.class);
+            final OldKillAura killAura = LiquidBounce.moduleManager.getModule(OldKillAura.class);
             if(killAura.getStrictStrafe() && RotationUtils.serverRotation != null && killAura.getState()) {
                 fixedYaw = RotationUtils.serverRotation.getYaw();
             }

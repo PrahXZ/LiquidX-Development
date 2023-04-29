@@ -21,11 +21,11 @@ import java.awt.Color
 @ModuleInfo(name = "Breadcrumbs", category = ModuleCategory.RENDER)
 class Breadcrumbs : Module() {
     private val typeValue = ListValue("Type", arrayOf("Line", "Rect", "Sphere", "Rise"), "Line")
+    private val colorRainbowValue = BoolValue("Rainbow", false)
     private val colorRedValue = IntegerValue("R", 255, 0, 255).displayable { !colorRainbowValue.get() }
     private val colorGreenValue = IntegerValue("G", 255, 0, 255).displayable { !colorRainbowValue.get() }
     private val colorBlueValue = IntegerValue("B", 255, 0, 255).displayable { !colorRainbowValue.get() }
-    private val colorAlphaValue = IntegerValue("Alpha", 255, 0, 255)
-    private val colorRainbowValue = BoolValue("Rainbow", false)
+    private val colorAlphaValue = IntegerValue("Alpha", 255, 0, 255).displayable { !colorRainbowValue.get() }
     private val fadeValue = BoolValue("Fade", true)
     private val drawThePlayerValue = BoolValue("DrawThePlayer", true)
     private val drawTargetsValue = BoolValue("DrawTargets", true)
@@ -144,12 +144,12 @@ class Breadcrumbs : Module() {
                     }
                 }
             }
-            when(typeValue.get().lowercase()) {
-                "line" -> {
+            when(typeValue.get()) {
+                "Line" -> {
                     GL11.glEnd()
                     GL11.glDisable(GL11.GL_LINE_SMOOTH)
                 }
-                "rect" -> {
+                "Rect" -> {
                     GL11.glEnable(GL11.GL_CULL_FACE)
                 }
             }
@@ -171,7 +171,7 @@ class Breadcrumbs : Module() {
         }
         // add new points
         if(mc.thePlayer.ticksExisted % precisionValue.get() != 0) {
-            return // skip if not on tick
+            return
         }
         if(drawTargetsValue.get()) {
             mc.theWorld.loadedEntityList.forEach {

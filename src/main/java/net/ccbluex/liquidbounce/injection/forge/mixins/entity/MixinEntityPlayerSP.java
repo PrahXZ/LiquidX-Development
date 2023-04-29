@@ -4,12 +4,14 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.entity;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.*;
 import net.ccbluex.liquidbounce.features.module.modules.combat.Criticals;
-import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
+import net.ccbluex.liquidbounce.features.module.modules.combat.OldKillAura;
+import net.ccbluex.liquidbounce.features.module.modules.exploit.No003;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Fly;
 import net.ccbluex.liquidbounce.features.module.modules.movement.InventoryMove;
-import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold;
+import net.ccbluex.liquidbounce.features.module.modules.world.OldScaffold;
 import net.ccbluex.liquidbounce.features.module.modules.movement.NoSlow;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Sprint;
+import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold;
 import net.ccbluex.liquidbounce.utils.Rotation;
 import net.ccbluex.liquidbounce.utils.RotationUtils;
 import net.minecraft.block.Block;
@@ -171,7 +173,7 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
                 
                 final Fly fly = LiquidBounce.moduleManager.getModule(Fly.class);
                 final Criticals criticals = LiquidBounce.moduleManager.getModule(Criticals.class);
-                boolean moved = xDiff * xDiff + yDiff * yDiff + zDiff * zDiff > 9.0E-4D || this.positionUpdateTicks >= 20 || (fly.getState() && fly.getAntiDesync()) || (criticals.getState() && criticals.getAntiDesync());
+                boolean moved = xDiff * xDiff + yDiff * yDiff + zDiff * zDiff > (LiquidBounce.moduleManager.getModule(No003.class).getState() ? 0D : 9.0E-4D) || this.positionUpdateTicks >= 20 || (fly.getState() && fly.getAntiDesync()) || (criticals.getState() && criticals.getAntiDesync());
                 boolean rotated = yawDiff != 0.0D || pitchDiff != 0.0D;
 
                 if (this.ridingEntity == null) {
@@ -283,7 +285,7 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
         this.movementInput.updatePlayerMoveState();
 
         final NoSlow noSlow = LiquidBounce.moduleManager.getModule(NoSlow.class);
-        final KillAura killAura = LiquidBounce.moduleManager.getModule(KillAura.class);
+        final OldKillAura killAura = LiquidBounce.moduleManager.getModule(OldKillAura.class);
 
         if (getHeldItem() != null && (this.isUsingItem() || (getHeldItem().getItem() instanceof ItemSword && killAura.getBlockingStatus())) && !this.isRiding()) {
             final SlowDownEvent slowDownEvent = new SlowDownEvent(0.2F, 0.2F);
@@ -314,8 +316,11 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
             this.setSprinting(true);
         }
 
-        final Scaffold scaffold = LiquidBounce.moduleManager.getModule(Scaffold.class);
+        final OldScaffold scaffold = LiquidBounce.moduleManager.getModule(OldScaffold.class);
         if ((scaffold.getState() && !scaffold.getCanSprint()) || (sprint.getState() && sprint.getCheckServerSide().get() && (onGround || !sprint.getCheckServerSideGround().get()) && !sprint.getAllDirectionsValue().get() && RotationUtils.targetRotation != null && RotationUtils.getRotationDifference(new Rotation(mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch)) > 30))
+            this.setSprinting(false);
+
+        if ((LiquidBounce.moduleManager.getModule(Scaffold.class).getState() && !LiquidBounce.moduleManager.getModule(Scaffold.class).getCanSprint()) || (sprint.getState() && sprint.getCheckServerSide().get() && (onGround || !sprint.getCheckServerSideGround().get()) && !sprint.getAllDirectionsValue().get() && RotationUtils.targetRotation != null && RotationUtils.getRotationDifference(new Rotation(mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch)) > 30))
             this.setSprinting(false);
 
         if (this.isSprinting() && ((!(sprint.getState() && sprint.getAllDirectionsValue().get()) && this.movementInput.moveForward < f) || this.isCollidedHorizontally || !flag3))
@@ -325,7 +330,6 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
         if(inventoryMove.getNoSprintValue().equals("Real") && inventoryMove.getInvOpen())
             this.setSprinting(false);
 
-        //aac may check it :(
         if (this.capabilities.allowFlying) {
             if (this.mc.playerController.isSpectatorMode()) {
                 if (!this.capabilities.isFlying) {

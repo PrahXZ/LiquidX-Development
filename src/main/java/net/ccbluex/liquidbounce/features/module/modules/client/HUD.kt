@@ -27,7 +27,6 @@ object HUD : Module() {
     val shadowValue = ListValue("TextShadowMode", arrayOf("LiquidBounce", "Outline", "Default", "Autumn"), "Default")
     val clolormode = ListValue("ColorMode", arrayOf("Rainbow", "Light Rainbow", "Static", "Double Color", "Default"), "Light Rainbow")
     val hueInterpolation = BoolValue("hueInterpolation", false)
-    val movingcolors = BoolValue("MovingColors", false)
     val inventoryParticle = BoolValue("InventoryParticle", false)
     private val blurValue = BoolValue("Blur", false)
     val fontChatValue = BoolValue("FontChat", false)
@@ -50,7 +49,7 @@ object HUD : Module() {
     val arraylistYAxisAnimTypeValue = EaseUtils.getEnumEasingList("ArraylistYAxisAnimType")
     val arraylistYAxisAnimOrderValue = EaseUtils.getEnumEasingOrderList("ArraylistYAxisHotbarAnimOrder")
     val fontEpsilonValue = FloatValue("FontVectorEpsilon", 0.5f, 0f, 1.5f)
-    private val buttonValue = ListValue("Button", arrayOf("Better", "RGBRounded", "Wolfram", "Rounded", "Hyperium", "RGB", "Badlion", "Flat", "FLine", "Rise", "Vanilla"), "Rounded")
+    private val buttonValue = ListValue("Button", arrayOf("Better", "RGBRounded", "Wolfram", "Rounded", "Hyperium", "RGB", "FLine", "Rise", "Vanilla"), "Rounded")
 
     private var lastFontEpsilon = 0f
 
@@ -152,7 +151,6 @@ object HUD : Module() {
             "rise" -> RiseButtonRenderer(button)
             "hyperium" -> HyperiumButtonRenderer(button)
             "rgb" -> RGBButtonRenderer(button)
-            "badlion" -> BadlionTwoButtonRenderer(button)
             "rgbrounded" -> RGBRoundedButtonRenderer(button)
             "wolfram" -> WolframButtonRenderer(button)
             else -> null // vanilla or unknown

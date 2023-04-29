@@ -16,11 +16,8 @@ class Eagle : Module() {
 
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
-
-
-
         mc.gameSettings.keyBindSneak.pressed =
-                mc.theWorld.getBlockState(BlockPos(mc.thePlayer.posX + mc.thePlayer.motionX.toDouble() * 0.2, mc.thePlayer.posY - 1.0, mc.thePlayer.posZ + mc.thePlayer.motionZ.toDouble() * 0.2)).block == Blocks.air
+                mc.theWorld.getBlockState(BlockPos(mc.thePlayer.posX + mc.thePlayer.motionX * 0.2, mc.thePlayer.posY - 1.0, mc.thePlayer.posZ + mc.thePlayer.motionZ * 0.2)).block == Blocks.air
     }
 
     override fun onDisable() {

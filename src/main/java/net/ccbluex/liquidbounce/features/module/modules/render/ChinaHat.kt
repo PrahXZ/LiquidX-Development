@@ -26,11 +26,11 @@ class ChinaHat : Module() {
     private val drawThePlayerValue = BoolValue("DrawThePlayer", true)
     private val onlyThirdPersonValue = BoolValue("OnlyThirdPerson", true).displayable { drawThePlayerValue.get() }
     private val drawTargetsValue = BoolValue("DrawTargets", true)
+    private val colorRainbowValue = BoolValue("Rainbow", false)
     private val colorRedValue = IntegerValue("R", 255, 0, 255).displayable { !colorRainbowValue.get() }
     private val colorGreenValue = IntegerValue("G", 255, 0, 255).displayable { !colorRainbowValue.get() }
     private val colorBlueValue = IntegerValue("B", 255, 0, 255).displayable { !colorRainbowValue.get() }
-    private val colorAlphaValue = IntegerValue("Alpha", 200, 0, 255)
-    private val colorRainbowValue = BoolValue("Rainbow", false)
+    private val colorAlphaValue = IntegerValue("Alpha", 200, 0, 255).displayable { !colorRainbowValue.get() }
 
     @EventTarget
     fun onRender3d(event: Render3DEvent) {

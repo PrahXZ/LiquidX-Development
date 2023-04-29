@@ -20,8 +20,6 @@ import java.util.*
 
 @ModuleInfo(name = "AntiBot", category = ModuleCategory.MISC)
 object AntiBot : Module() {
-
-    private val buzzValue = BoolValue("BuzzZombies", true)
     private val tabValue = BoolValue("Tab", false)
     private val tabModeValue = ListValue("TabMode", arrayOf("Equals", "Contains"), "Contains").displayable { tabValue.get() }
     private val entityIDValue = BoolValue("EntityID", false)

@@ -35,6 +35,7 @@ abstract class SpeedMode(val modeName: String) : MinecraftInstance() {
     open fun onMove(event: MoveEvent) {}
     open fun onPacket(event: PacketEvent) {}
     open fun onTick() {}
+    open fun onJump() {}
 
     open val noJump = false
 }

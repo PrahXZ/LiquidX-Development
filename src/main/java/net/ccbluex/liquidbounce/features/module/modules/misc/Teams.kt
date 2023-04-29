@@ -14,7 +14,6 @@ class Teams : Module() {
 
     private val scoreboardValue = BoolValue("ScoreboardTeam", true)
     private val colorValue = BoolValue("Color", true)
-    private val gommeSWValue = BoolValue("GommeSW", false)
     private val armorValue = BoolValue("ArmorColor", false)
 
     /**
@@ -26,15 +25,6 @@ class Teams : Module() {
         if (scoreboardValue.get() && mc.thePlayer.team != null && entity.team != null &&
                 mc.thePlayer.team.isSameTeam(entity.team)) {
             return true
-        }
-        if (gommeSWValue.get() && mc.thePlayer.displayName != null && entity.displayName != null) {
-            val targetName = entity.displayName.formattedText.replace("§r", "")
-            val clientName = mc.thePlayer.displayName.formattedText.replace("§r", "")
-            if (targetName.startsWith("T") && clientName.startsWith("T")) {
-                if (targetName[1].isDigit() && clientName[1].isDigit()) {
-                    return targetName[1] == clientName[1]
-                }
-            }
         }
         if (armorValue.get()) {
             val entityPlayer = entity as EntityPlayer

@@ -35,7 +35,6 @@ class Speed : Module() {
 
     private val noWater = BoolValue("NoWater", true)
     private val debug = BoolValue("Debug", false)
-    private val hidejumps = BoolValue("Hide Jumps", false)
     val legacyWarningValue = BoolValue("LegacyWarn", true)
 
     @EventTarget
@@ -63,10 +62,6 @@ class Speed : Module() {
         }
 
 
-        if (hidejumps.get()) {
-            mc.thePlayer.cameraYaw = 0.0F
-        }
-
         mode.onPreMotion()
     }
 
@@ -77,7 +72,6 @@ class Speed : Module() {
         }
 
         mode.onMove(event)
-//        LiquidBounce.moduleManager[TargetStrafe::class.java]!!.doMove(event)
     }
 
     @EventTarget
@@ -116,10 +110,8 @@ class Speed : Module() {
     override val tag: String
         get() = modeValue.get()
 
-    /**
-     * 读取mode中的value并和本体中的value合并
-     * 所有的value必须在这个之前初始化
-      */
+
+
     override val values = super.values.toMutableList().also {
         modes.map { mode ->
             mode.values.forEach { value ->

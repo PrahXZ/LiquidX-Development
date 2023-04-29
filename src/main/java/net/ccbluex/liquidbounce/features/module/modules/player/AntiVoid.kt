@@ -20,7 +20,7 @@ import net.minecraft.util.BlockPos
 
 @ModuleInfo(name = "AntiVoid", category = ModuleCategory.PLAYER)
 class AntiVoid : Module() {
-    private val modeValue = ListValue("Mode", arrayOf("Universocraft", "Blink", "TPBack", "MotionFlag", "PacketFlag", "GroundSpoof", "OldHypixel", "Jartex", "OldCubecraft", "Packet"), "Blink")
+    private val modeValue = ListValue("Mode", arrayOf("Universocraft", "Blink", "TPBack", "MotionFlag", "PacketFlag", "GroundSpoof", "OldHypixel", "OldCubecraft", "Packet"), "Universocraft")
     private val maxFallDistValue = FloatValue("MaxFallDistance", 10F, 5F, 20F)
     private val resetMotionValue = BoolValue("ResetMotion", false).displayable { modeValue.equals("Blink") }
     private val startFallDistValue = FloatValue("BlinkStartFallDistance", 2F, 0F, 5F).displayable { modeValue.equals("Blink") }
@@ -75,14 +75,16 @@ class AntiVoid : Module() {
         when (modeValue.get().lowercase()) {
 
             "universocraft" -> {
+                canSpoof = false
                 if (!voidOnlyValue.get() || checkVoid()) {
-                    if (mc.thePlayer.fallDistance > maxFallDistValue.get() && !tried) {
-                        mc.thePlayer.motionX = 0.0
+                    if (mc.thePlayer.fallDistance> maxFallDistValue.get() && mc.thePlayer.posY <lastRecY + 0.01 && mc.thePlayer.motionY <= 0 && !mc.thePlayer.onGround && !flagged) {
                         mc.thePlayer.motionY = 0.0
-                        mc.thePlayer.motionZ = 0.0
-                        tried = true
+                        mc.thePlayer.motionZ *= 0.838
+                        mc.thePlayer.motionX *= 0.838
+                        canSpoof = true
                     }
                 }
+                lastRecY = mc.thePlayer.posY
             }
 
             "groundspoof" -> {
@@ -126,19 +128,6 @@ class AntiVoid : Module() {
                         tried = true
                     }
                 }
-            }
-
-            "jartex" -> {
-                canSpoof = false
-                if (!voidOnlyValue.get() || checkVoid()) {
-                    if (mc.thePlayer.fallDistance> maxFallDistValue.get() && mc.thePlayer.posY <lastRecY + 0.01 && mc.thePlayer.motionY <= 0 && !mc.thePlayer.onGround && !flagged) {
-                        mc.thePlayer.motionY = 0.0
-                        mc.thePlayer.motionZ *= 0.838
-                        mc.thePlayer.motionX *= 0.838
-                        canSpoof = true
-                    }
-                }
-                lastRecY = mc.thePlayer.posY
             }
 
             "oldcubecraft" -> {
@@ -243,6 +232,14 @@ class AntiVoid : Module() {
         val packet = event.packet
 
         when (modeValue.get().lowercase()) {
+            "universocraft" -> {
+                if (canCancel && packet is C03PacketPlayer) {
+                    event.cancelEvent()
+                }
+                if (packet is S08PacketPlayerPosLook) {
+                    canCancel = false
+                }
+            }
             "blink" -> {
                 if (blink && (packet is C03PacketPlayer)) {
                     packetCache.add(packet)

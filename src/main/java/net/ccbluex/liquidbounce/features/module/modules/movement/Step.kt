@@ -646,7 +646,6 @@ class Step : Module() {
         }
     }
 
-    // There could be some anti cheats which tries to detect step by checking for achievements and stuff
     private fun fakeJump() {
         mc.thePlayer.isAirBorne = true
         mc.thePlayer.triggerAchievement(StatList.jumpStat)

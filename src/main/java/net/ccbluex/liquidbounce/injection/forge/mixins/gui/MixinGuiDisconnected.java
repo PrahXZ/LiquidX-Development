@@ -47,7 +47,7 @@ public abstract class MixinGuiDisconnected extends MixinGuiScreen {
         SessionUtils.handleConnection();
 
         final ServerData server=ServerUtils.serverData;
-        infoStr="§fPlaying on: "+mc.session.getUsername()+" | "+server.serverIP;
+        infoStr="§fUsername: "+mc.session.getUsername()+" | "+" Server: "+server.serverIP;
         buttonList.add(reconnectButton = new GuiButton(1, this.width / 2 - 100, this.height / 2 + field_175353_i / 2 + this.fontRendererObj.FONT_HEIGHT + 22, 98, 20, "%ui.reconnect%"));
 
         buttonList.add(autoReconnectDelaySlider =

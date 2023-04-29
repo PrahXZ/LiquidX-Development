@@ -238,20 +238,6 @@ public class Fonts {
         }
         return font;
     }
-    private static Font getFont1(int size) {
-        Font font;
-        try {
-            InputStream is = Minecraft.getMinecraft().getResourceManager()
-                    .getResource(new ResourceLocation("liquidx/font/icon.ttf")).getInputStream();
-            font = Font.createFont(0, is);
-            font = font.deriveFont(0, size);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("Error loading font");
-            font = new Font("default", 0, size);
-        }
-        return font;
-    }
     private static Font getFont2(int size) {
         Font font;
         try {

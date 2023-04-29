@@ -182,7 +182,7 @@ class Projectiles : Module() {
                 motionX *= 0.6
                 motionY *= 0.6
                 motionZ *= 0.6
-            } else { // Update motion
+            } else {
                 motionX *= motionSlowdown.toDouble()
                 motionY *= motionSlowdown.toDouble()
                 motionZ *= motionSlowdown.toDouble()

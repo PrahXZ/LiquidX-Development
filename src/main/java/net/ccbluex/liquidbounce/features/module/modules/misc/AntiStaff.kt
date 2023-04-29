@@ -19,11 +19,11 @@ import net.minecraft.network.play.server.S1DPacketEntityEffect
 @ModuleInfo(name = "AntiStaff", category = ModuleCategory.MISC)
 class AntiStaff : Module() {
 
-    private val serverValue = ListValue("Server", arrayOf("BlocksMC", "Jartex", "Pika", "Minebox", "Minemora", "Zonecraft", "Hycraft", "Librecraft","Custom"),"BlocksMC")
+    private val serverValue = ListValue("Server", arrayOf("BlocksMC", "Jartex", "Pika", "Minebox", "Zonecraft", "Hycraft", "Librecraft","Custom"),"BlocksMC")
     private val notifyValue = BoolValue("Notification",true)
     private val chatValue = BoolValue("SendChatMessage",false)
     private val messageValue = TextValue("Message", "%staff% was detected as a staff member!").displayable { chatValue.get() }
-    private val customURLValue = TextValue("CustomURL", "https://raw.githubusercontent.com/fdpweb/fdpweb.github.io/main/test").displayable { serverValue.equals("Custom") }
+    private val customURLValue = TextValue("CustomURL", "test url").displayable { serverValue.equals("Custom") }
 
     private val leaveValue = BoolValue("Leave",true)
     private val leaveMessageValue = TextValue("LeaveCommand","/hub").displayable { leaveValue.get() }
@@ -35,8 +35,6 @@ class AntiStaff : Module() {
     private var zonecraftStaff : String = "002Aren asiessoydecono donerreMC elMagnificPvP ErCris fernxndx gourd Gudaa ImAle ImMarvolo ismq nicoxrm pacorro rapheos MrBara MrMonkey57 uploadedhh trifeyy 002Aren Agu5 augusmaster BetTD d411 dunshbey85 ElMaGnific Pv ErCris Eugene FelmaxMC Gudaa ¡Enux ImMarvolo sleepless ismq ItzOmar16 joescam LuisPoMC Nicoxrm pacorro "
     private var hycraftStaff : String = "Alexander245 arqui Blandih Chony_15 jac0mc Ragen06 TheBryaan TMT_131 Yapecito MartynaGamer830 archeriam"
     private var librecraftStaff : String = "Kudos  H0DKIER  Iker_XD9  acreate  iJeanSC  acreate  Janet  Rosse_RM  aldoum23neko_  DERGO  MJKINGPAND"
-    private var minemoraStaff : String = "Ruficraft MariSG iSebaas MaxyMC LuhGleh Esmorall SrLucchel_ ninjagod98 DarkFumado iDrecs CuencaDeDiamante PainSex"
-    
     
     private var detected = false
     private var staffs = ""
@@ -52,8 +50,6 @@ class AntiStaff : Module() {
             "pika" -> staffs = pikaStaff
 
             "minebox" -> staffs = mineboxStaff
-
-            "minemora" -> staffs = minemoraStaff
             
             "zonecraft" -> staffs = zonecraftStaff
             

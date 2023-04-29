@@ -129,7 +129,4 @@ public class Radar extends Module
         return MathHelper.clamp_int(p_clamp_int_0_4, 0, 255) << 24 | MathHelper.clamp_int(p_clamp_int_0_, 0, 255) << 16 | MathHelper.clamp_int(p_clamp_int_0_2, 0, 255) << 8 | MathHelper.clamp_int(p_clamp_int_0_3, 0, 255);
     }
 
-    private float findAngle(float x, float x2, float y, float y2) {
-        return (float)(Math.atan2((double)(y2 - y), (double)(x2 - x)) * 180.0 / 3.141592653589793);
-    }
 }

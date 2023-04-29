@@ -120,7 +120,6 @@ object ChestAura : Module() {
 
     @EventTarget
     fun onWorld(event: WorldEvent) {
-        // clear blocks record when change world
         clickedBlocks.clear()
     }
 

@@ -54,6 +54,26 @@ public class ClientSpoofer extends MinecraftInstance implements Listenable {
                 e.printStackTrace();
             }
         }
+        if (enabled && !Minecraft.getMinecraft().isIntegratedServerRunning() && clientSpoof.modeValue.equals("CB")) {
+            try {
+                if (packet instanceof C17PacketCustomPayload) {
+                    final C17PacketCustomPayload customPayload = (C17PacketCustomPayload) packet;
+                    customPayload.data = (new PacketBuffer(Unpooled.buffer()).writeString("CB"));
+                }
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (enabled && !Minecraft.getMinecraft().isIntegratedServerRunning() && clientSpoof.modeValue.equals("Geyser")) {
+            try {
+                if (packet instanceof C17PacketCustomPayload) {
+                    final C17PacketCustomPayload customPayload = (C17PacketCustomPayload) packet;
+                    customPayload.data = (new PacketBuffer(Unpooled.buffer()).writeString("Geyser"));
+                }
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

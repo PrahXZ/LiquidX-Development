@@ -15,7 +15,7 @@ import net.minecraft.potion.Potion
 @ModuleInfo(name = "Regen", category = ModuleCategory.PLAYER)
 class Regen : Module() {
 
-    private val modeValue = ListValue("Mode", arrayOf("Vanilla", "OldSpartan", "NewSpartan", "AAC4NoFire"), "Vanilla")
+    private val modeValue = ListValue("Mode", arrayOf("Vanilla", "OldSpartan", "NewSpartan"), "Vanilla")
     private val healthValue = IntegerValue("Health", 18, 0, 20)
     private val delayValue = IntegerValue("Delay", 0, 0, 1000)
     private val foodValue = IntegerValue("Food", 18, 0, 20)
@@ -50,15 +50,6 @@ class Regen : Module() {
                         mc.netHandler.addToSendQueue(C03PacketPlayer(mc.thePlayer.onGround))
                     }
                 }
-
-                "aac4nofire" -> {
-                    if (mc.thePlayer.isBurning && mc.thePlayer.ticksExisted % 10 == 0) {
-                        repeat(35) {
-                            mc.netHandler.addToSendQueue(C03PacketPlayer(true))
-                        }
-                    }
-                }
-
                 "newspartan" -> {
                     if (mc.thePlayer.ticksExisted % 5 == 0) {
                         resetTimer = true

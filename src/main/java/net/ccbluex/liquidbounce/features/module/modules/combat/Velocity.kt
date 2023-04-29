@@ -38,7 +38,6 @@ class Velocity : Module() {
     val velocityTickValue = IntegerValue("VelocityTick", 1, 0, 10).displayable { modeValue.equals("Tick") || modeValue.equals("OldSpartan")}
     val onlyGroundValue = BoolValue("OnlyGround", false)
     val onlyCombatValue = BoolValue("OnlyCombat", false)
-    // private val onlyHitVelocityValue = BoolValue("OnlyHitVelocity",false)
     private val noFireValue = BoolValue("noFire", false)
 
     private val overrideDirectionValue = ListValue("OverrideDirection", arrayOf("None", "Hard", "Offset"), "None")
@@ -116,7 +115,6 @@ class Velocity : Module() {
             if (mc.thePlayer == null || (mc.theWorld?.getEntityByID(packet.entityID) ?: return) != mc.thePlayer) {
                 return
             }
-            // if(onlyHitVelocityValue.get() && packet.getMotionY()<400.0) return
             if (noFireValue.get() && mc.thePlayer.isBurning) return
             velocityTimer.reset()
             velocityTick = 0

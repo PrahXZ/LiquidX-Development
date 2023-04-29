@@ -238,7 +238,7 @@ class ESP : Module() {
         val mode = modeValue.get().lowercase()
         val partialTicks = event.partialTicks
 
-        if (mode.equals("jello", ignoreCase = true)) {
+        if (mode.equals("Jello")) {
             val hurtingEntities = ArrayList<EntityLivingBase>()
             var shader: FramebufferShader = GlowShader.GLOW_SHADER
             var radius = 3f

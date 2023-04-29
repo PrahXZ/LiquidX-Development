@@ -3,7 +3,7 @@ package net.ccbluex.liquidbounce.features.module.modules.combat.velocitys.redesk
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.event.PacketEvent
 import net.ccbluex.liquidbounce.event.UpdateEvent
-import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
+import net.ccbluex.liquidbounce.features.module.modules.combat.OldKillAura
 import net.ccbluex.liquidbounce.features.module.modules.combat.velocitys.VelocityMode
 import net.minecraft.network.play.client.C02PacketUseEntity
 import net.minecraft.network.play.client.C0APacketAnimation
@@ -26,7 +26,7 @@ class Redesky2Velocity : VelocityMode("Redesky2") {
                 return
             }
 
-            val target = LiquidBounce.combatManager.getNearByEntity(LiquidBounce.moduleManager[KillAura::class.java]!!.rangeValue.get() + 1) ?: return
+            val target = LiquidBounce.combatManager.getNearByEntity(LiquidBounce.moduleManager[OldKillAura::class.java]!!.rangeValue.get() + 1) ?: return
             mc.thePlayer.motionX = 0.0
             mc.thePlayer.motionZ = 0.0
             packet.motionX = 0

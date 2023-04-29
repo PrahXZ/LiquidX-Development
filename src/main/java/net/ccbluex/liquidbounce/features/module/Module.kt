@@ -55,10 +55,6 @@ open class Module : MinecraftInstance(), Listenable {
     val moduleInfo = javaClass.getAnnotation(ModuleInfo::class.java)!!
     var splicedName = ""
         get() {
-//            val translatedName=LanguageManager.replace(localizedName)
-//            if(field.replace(" ","") != translatedName){
-//                field=StringUtils.toCompleteString(RegexUtils.match(translatedName, "[A-Z][a-z]*"))
-//            }
             if (field.isEmpty()) {
                 val sb = StringBuilder()
                 val arr = name.toCharArray()

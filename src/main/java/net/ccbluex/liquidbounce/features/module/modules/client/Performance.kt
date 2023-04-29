@@ -9,10 +9,10 @@ import net.ccbluex.liquidbounce.features.value.BoolValue
 @ModuleInfo(name = "Performance", category = ModuleCategory.CLIENT, defaultOn = true, canEnable = false, array = false)
 object Performance : Module() {
     @JvmField
-    var staticParticleColorValue = BoolValue("StaticParticleColor", true)
+    var staticParticleColorValue = BoolValue("StaticParticleColor", false)
     @JvmField
-    var fastEntityLightningValue = BoolValue("FastEntityLightning", true)
+    var fastEntityLightningValue = BoolValue("FastEntityLightning", false)
     @JvmField
-    var fastBlockLightningValue = BoolValue("FastBlockLightning", true)
+    var fastBlockLightningValue = BoolValue("FastBlockLightning", false)
 }
 

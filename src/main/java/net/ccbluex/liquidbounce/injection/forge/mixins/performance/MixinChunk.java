@@ -107,8 +107,7 @@ public abstract class MixinChunk implements IChunk {
                 return extendedBlockStorage.get(n4, n5, n6);
             }
             return Blocks.air.getDefaultState();
-        }
-        catch (Throwable throwable) {
+        } catch (Throwable throwable) {
             CrashReport crashReport = CrashReport.makeCrashReport(throwable, "Getting block state");
             CrashReportCategory crashReportCategory = crashReport.makeCategory("Block being got");
             crashReportCategory.addCrashSectionCallable("Location", () -> CrashReportCategory.getCoordinateInfo(new BlockPos(n, n2, n3)));

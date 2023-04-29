@@ -14,7 +14,7 @@ import net.minecraft.network.play.client.C0BPacketEntityAction;
 @ModuleInfo(name = "Sneak", category = ModuleCategory.MOVEMENT)
 public class Sneak extends Module {
 
-    public final ListValue modeValue = new ListValue("Mode", new String[] {"Legit", "Vanilla", "Switch", "MineSecure", "AAC3.6.4"}, "MineSecure");
+    public final ListValue modeValue = new ListValue("Mode", new String[] {"Legit", "Vanilla", "Switch", "AAC3.6.4"}, "Legit");
     public final BoolValue stopMoveValue = new BoolValue("StopMove", false);
 
     private boolean sneaked;
@@ -60,12 +60,6 @@ public class Sneak extends Module {
                         break;
                 }
                 break;
-            case "minesecure":
-                if(event.getEventState() == EventState.PRE)
-                    break;
-
-                mc.getNetHandler().addToSendQueue(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SNEAKING));
-                break;
 
         }
     }
@@ -82,9 +76,6 @@ public class Sneak extends Module {
             case "aac3.6.4":
                 if(!GameSettings.isKeyDown(mc.gameSettings.keyBindSneak))
                     mc.gameSettings.keyBindSneak.pressed = false;
-                break;
-            case "minesecure":
-                mc.getNetHandler().addToSendQueue(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SNEAKING));
                 break;
         }
         super.onDisable();

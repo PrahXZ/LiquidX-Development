@@ -12,6 +12,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+
 object MovementUtils : MinecraftInstance() {
 
     fun resetMotion(y: Boolean) {
@@ -28,9 +29,11 @@ object MovementUtils : MinecraftInstance() {
      * Calculate speed based on the speed potion effect level/amplifier
      */
     fun getSpeedWithPotionEffects(speed: Double) =
-        mc.thePlayer.getActivePotionEffect(Potion.moveSpeed)?.let {
-            speed * (1 + (it.amplifier + 1) * 0.2)
-        } ?: speed
+            mc.thePlayer.getActivePotionEffect(Potion.moveSpeed)?.let {
+                speed * (1 + (it.amplifier + 1) * 0.2)
+            } ?: speed
+
+
 
     fun strafe() {
         strafe(getSpeed())
@@ -60,7 +63,7 @@ object MovementUtils : MinecraftInstance() {
         var baseSpeed = 0.2873
         if (Minecraft.getMinecraft().thePlayer.isPotionActive(Potion.moveSpeed)) {
             val amplifier = Minecraft.getMinecraft().thePlayer.getActivePotionEffect(Potion.moveSpeed)
-                .amplifier
+                    .amplifier
             baseSpeed *= 1.0 + 0.2 * (amplifier + 1)
         }
         return baseSpeed
@@ -151,9 +154,9 @@ object MovementUtils : MinecraftInstance() {
     fun forward(length: Double) {
         val yaw = Math.toRadians(mc.thePlayer.rotationYaw.toDouble())
         mc.thePlayer.setPosition(
-            mc.thePlayer.posX + -sin(yaw) * length,
-            mc.thePlayer.posY,
-            mc.thePlayer.posZ + cos(yaw) * length
+                mc.thePlayer.posX + -sin(yaw) * length,
+                mc.thePlayer.posY,
+                mc.thePlayer.posZ + cos(yaw) * length
         )
     }
 
@@ -267,12 +270,12 @@ object MovementUtils : MinecraftInstance() {
         var ground = mc.thePlayer.posY
         while (ground > 0.0) {
             val customBox = AxisAlignedBB(
-                playerBoundingBox.maxX,
-                ground + blockHeight,
-                playerBoundingBox.maxZ,
-                playerBoundingBox.minX,
-                ground,
-                playerBoundingBox.minZ
+                    playerBoundingBox.maxX,
+                    ground + blockHeight,
+                    playerBoundingBox.maxZ,
+                    playerBoundingBox.minX,
+                    ground,
+                    playerBoundingBox.minZ
             )
             if (mc.theWorld.checkBlockCollision(customBox)) {
                 if (blockHeight <= 0.05) return ground + blockHeight
@@ -292,7 +295,7 @@ object MovementUtils : MinecraftInstance() {
         var baseSpeed = 0.2875
         if (mc.thePlayer.isPotionActive(Potion.moveSpeed)) {
             baseSpeed *= 1.0 + 0.2 * (mc.thePlayer.getActivePotionEffect(Potion.moveSpeed)
-                .getAmplifier() + 1)
+                    .getAmplifier() + 1)
         }
         return baseSpeed
     }
@@ -315,12 +318,12 @@ object MovementUtils : MinecraftInstance() {
             posY += 8.0
         }
         mc.netHandler.addToSendQueue(
-            C04PacketPlayerPosition(
-                mc.thePlayer.posX,
-                mc.thePlayer.posY,
-                mc.thePlayer.posZ,
-                true
-            )
+                C04PacketPlayerPosition(
+                        mc.thePlayer.posX,
+                        mc.thePlayer.posY,
+                        mc.thePlayer.posZ,
+                        true
+                )
         )
     }
 
@@ -360,3 +363,4 @@ object MovementUtils : MinecraftInstance() {
         return rotationYaw
     }
 }
+

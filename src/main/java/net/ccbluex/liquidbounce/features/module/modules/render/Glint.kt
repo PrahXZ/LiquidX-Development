@@ -17,9 +17,9 @@ class Glint : Module() {
     private val blueValue = IntegerValue("Blue", 0, 0, 255).displayable { modeValue.equals("Custom") }
 
     fun getColor(): Color {
-        return when (modeValue.get().lowercase()) {
-            "rainbow" -> ColorUtils.rainbow()
-            "anotherrainbow" -> ColorUtils.skyRainbow(10, 0.9F, 1F, 1.0)
+        return when (modeValue.get()) {
+            "Rainbow" -> ColorUtils.rainbow()
+            "AnotherRainbow" -> ColorUtils.skyRainbow(10, 0.9F, 1F, 1.0)
             else -> Color(redValue.get(), greenValue.get(), blueValue.get())
         }
     }

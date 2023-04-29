@@ -24,10 +24,10 @@ class BlockESP : Module() {
     private val outlineWidthValue = FloatValue("Outline-Width", 3f, 0.5f, 5f).displayable { modeValue.equals("Outline") }
     private val blockValue = BlockValue("Block", 168)
     private val radiusValue = IntegerValue("Radius", 40, 5, 120)
+    private val colorRainbowValue = BoolValue("Rainbow", false)
     private val colorRedValue = IntegerValue("R", 255, 0, 255).displayable { !colorRainbowValue.get() }
     private val colorGreenValue = IntegerValue("G", 179, 0, 255).displayable { !colorRainbowValue.get() }
     private val colorBlueValue = IntegerValue("B", 72, 0, 255).displayable { !colorRainbowValue.get() }
-    private val colorRainbowValue = BoolValue("Rainbow", false)
     private val searchTimer = MSTimer()
     private val posList: MutableList<BlockPos> = ArrayList()
     private var color = Color.CYAN
@@ -72,17 +72,17 @@ class BlockESP : Module() {
     fun onRender3D(event: Render3DEvent?) {
         synchronized(posList) {
             for (blockPos in posList) {
-                when (modeValue.get().lowercase()) {
-                    "box" -> {
+                when (modeValue.get()) {
+                    "Box" -> {
                         RenderUtils.drawBlockBox(blockPos, color, true, true, outlineWidthValue.get())
                     }
-                    "otherbox" -> {
+                    "OtherBox" -> {
                         RenderUtils.drawBlockBox(blockPos, color, false, true, outlineWidthValue.get())
                     }
-                    "outline" -> {
+                    "Outline" -> {
                         RenderUtils.drawBlockBox(blockPos, color, true, false, outlineWidthValue.get())
                     }
-                    "2d" -> {
+                    "2D" -> {
                         RenderUtils.draw2D(blockPos, color.rgb, Color.BLACK.rgb)
                     }
                 }

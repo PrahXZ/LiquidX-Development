@@ -1,6 +1,7 @@
 // LiquidX Development by PrahXZ and Haflin with FDP Base modified. v2.0 R1
 package net.ccbluex.liquidbounce.ui.client.gui;
 
+import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.EventTarget;
 import net.ccbluex.liquidbounce.event.PacketEvent;
 import net.ccbluex.liquidbounce.features.module.Module;
@@ -8,13 +9,11 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.ui.client.gui.clickgui.ClickGui;
 import net.ccbluex.liquidbounce.ui.client.gui.clickgui.style.styles.*;
-import net.ccbluex.liquidbounce.ui.client.gui.clickgui.style.styles.Slight.SlightUI;
-import net.ccbluex.liquidbounce.ui.client.gui.clickgui.style.styles.dropdown.DropdownGUI;
-import net.ccbluex.liquidbounce.ui.client.gui.clickgui.style.styles.light.LightClickGUI;
-import net.ccbluex.liquidbounce.ui.client.gui.clickgui.style.styles.tenacity.TenacityClickGUI;
-import net.ccbluex.liquidbounce.ui.client.gui.clickgui.style.styles.novoline.ClickyUI;
-import net.ccbluex.liquidbounce.ui.client.gui.clickgui.style.styles.newVer.NewUi;
+import net.ccbluex.liquidbounce.ui.client.gui.clickgui.style.styles.CSGO.LightClickGUI;
+import net.ccbluex.liquidbounce.ui.client.gui.clickgui.style.styles.LBPlus.NewUi;
 import net.ccbluex.liquidbounce.ui.client.gui.options.modernuiLaunchOption;
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NotifyType;
 import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.features.value.*;
 import net.minecraft.network.Packet;
@@ -25,7 +24,7 @@ import java.awt.*;
 
 @ModuleInfo(name = "ClickGUI", category = ModuleCategory.CLIENT, keyBind = Keyboard.KEY_RSHIFT, canEnable = false)
 public class ClickGUIModule extends Module {
-    public ListValue styleValue = new ListValue("Style", new String[]{"Classic", "Light", "Novoline", "Astolfo", "LB+", "Jello", "LiquidBounce", "Tenacity5", "Slight", "Bjur", "Glow", "Null", "Slowly", "Black", "White"}, "Astolfo") {
+    public ListValue styleValue = new ListValue("Style", new String[]{"CSGO", "Astolfo", "LB+", "LiquidBounce", "Glow", "Null", "Slowly"}, "LiquidBounce") {
         @Override
         protected void onChanged(final String oldValue, final String newValue) {
             updateStyle();
@@ -58,23 +57,11 @@ public class ClickGUIModule extends Module {
     @Override
     public void onEnable() {
 
-        if (styleValue.get().contains("Novoline")) {
-            mc.displayGuiScreen(new ClickyUI());
-            this.setState(false);
-        } else if (styleValue.get().contains("Light")) {
+        if (styleValue.get().contains("CSGO")) {
             mc.displayGuiScreen(new LightClickGUI());
             this.setState(false);
-        } else if (styleValue.get().equalsIgnoreCase("Classic")){
-            mc.displayGuiScreen(new DropdownGUI());
-        } else if (styleValue.get().equalsIgnoreCase("Tenacity")){
-            mc.displayGuiScreen(new TenacityClickGUI());
         }  else if (styleValue.get().equalsIgnoreCase("LB+")){
             mc.displayGuiScreen(NewUi.getInstance());
-        } else if (styleValue.get().equalsIgnoreCase("Bjur")){
-            mc.displayGuiScreen(new BjurStyle());
-        } else if (styleValue.get().contains("Slight")) {
-                mc.displayGuiScreen(new SlightUI());
-            this.setState(false);
         } else {
             updateStyle();
             mc.displayGuiScreen(modernuiLaunchOption.clickGui);
@@ -93,20 +80,9 @@ public class ClickGUIModule extends Module {
             case "slowly":
                 modernuiLaunchOption.clickGui.style = new SlowlyStyle();
                 break;
-            case "black":
-                modernuiLaunchOption.clickGui.style = new BlackStyle();
-                break;
-            case "white":
-                modernuiLaunchOption.clickGui.style = new WhiteStyle();
-                break;
-            case "jello":
-                modernuiLaunchOption.clickGui.style = new JelloStyle();
-                break;
-            case "tenacity5":
-                modernuiLaunchOption.clickGui.style = new TenacityStyle();
-                break;
             case "glow":
                 modernuiLaunchOption.clickGui.style = new GlowStyle();
+                LiquidBounce.hud.addNotification(new Notification("ClickGUI", "can cause lag problems", NotifyType.WARNING,4000,500));
                 break;
             case "astolfo":
                 modernuiLaunchOption.clickGui.style = new AstolfoStyle();

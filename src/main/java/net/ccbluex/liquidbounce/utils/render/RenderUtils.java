@@ -53,7 +53,6 @@ import java.util.*;
 import static akka.actor.Nobody.start;
 import static akka.actor.Nobody.stop;
 import static java.lang.Math.*;
-import static net.ccbluex.liquidbounce.ui.client.gui.clickgui.style.styles.novoline.AnimationUtil.getAnimationState;
 import static net.minecraft.client.renderer.GlStateManager.disableBlend;
 import static net.minecraft.client.renderer.GlStateManager.enableTexture2D;
 import static org.lwjgl.opengl.GL11.*;
@@ -261,9 +260,6 @@ public final class RenderUtils extends MinecraftInstance {
         return color;
     }
 
-    public static float smoothAnimation(float ani, float finalState, float speed, float scale) {
-        return getAnimationState(ani, finalState, Math.max(10.0F, Math.abs(ani - finalState) * speed) * scale);
-    }
     public static boolean isHovering(int mouseX, int mouseY, float xLeft, float yUp, float xRight, float yBottom) {
         return (float)mouseX > xLeft && (float)mouseX < xRight && (float)mouseY > yUp && (float)mouseY < yBottom;
     }

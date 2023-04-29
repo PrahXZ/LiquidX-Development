@@ -65,8 +65,6 @@ class ChestStealer : Module() {
     private val noCompassValue = BoolValue("NoCompass", false)
     private val autoCloseValue = BoolValue("AutoClose", true)
     public val silentValue = BoolValue("Silent", true)
-    public val showStringValue = BoolValue("Silent-ShowString", false).displayable { silentValue.get() }
-    public val stillDisplayValue = BoolValue("Silent-StillDisplay", false).displayable { silentValue.get() }
     public val silentTitleValue = BoolValue("SilentTitle", true)
 
     private val autoCloseMaxDelayValue: IntegerValue = object : IntegerValue("AutoCloseMaxDelay", 0, 0, 400) {
@@ -100,7 +98,6 @@ class ChestStealer : Module() {
 
     public var contentReceived = 0
 
-    public var once = false
 
     @EventTarget
     fun onRender3D(event: Render3DEvent) {

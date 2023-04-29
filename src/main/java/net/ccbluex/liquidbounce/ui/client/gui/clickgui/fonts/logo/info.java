@@ -3,7 +3,7 @@ package net.ccbluex.liquidbounce.ui.client.gui.clickgui.fonts.logo;
 
 import net.ccbluex.liquidbounce.ui.client.gui.clickgui.fonts.api.FontManager;
 import net.ccbluex.liquidbounce.ui.client.gui.clickgui.fonts.impl.SimpleFontManager;
-import net.ccbluex.liquidbounce.ui.client.gui.clickgui.style.styles.tenacity.SideGui.SideGui;
+import net.ccbluex.liquidbounce.ui.client.gui.clickgui.style.styles.oldfiles.SideGui;
 
 public class info {
     public static String Name = "LiquidX";
@@ -20,7 +20,6 @@ public class info {
             if (INSTANCE == null) INSTANCE = new info();
             return INSTANCE;
         } catch (Throwable t) {
-            //    ClientUtils.getLogger().warn(t);
             throw t;
         }
     }

@@ -17,8 +17,6 @@ object MathUtils {
     fun getDistance(x1: Double, y1: Double, x2: Double, y2: Double): Double {
         return sqrt((x1 - x2).pow((2).toDouble()) + (y1 - y2).pow((2).toDouble()))
     }
-    // TODO: Solve the coordinates of the intersection of two circles (there will be time at the end of the month)（TargetStrafe）
-    // 2 + 2 is 4 - 1  thats 3 quick maffs
 
     fun lerp(a: Array<Double>, b: Array<Double>, t: Double) = arrayOf(a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t)
 

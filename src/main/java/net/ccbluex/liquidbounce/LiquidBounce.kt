@@ -7,6 +7,7 @@ import net.ccbluex.liquidbounce.features.command.CommandManager
 import net.ccbluex.liquidbounce.features.macro.MacroManager
 import net.ccbluex.liquidbounce.features.module.ModuleManager
 import net.ccbluex.liquidbounce.features.special.*
+import net.ccbluex.liquidbounce.features.special.rpcs.*
 import net.ccbluex.liquidbounce.file.FileManager
 import net.ccbluex.liquidbounce.file.config.ConfigManager
 import net.ccbluex.liquidbounce.ui.client.gui.EnumLaunchFilter
@@ -24,44 +25,31 @@ import net.ccbluex.liquidbounce.utils.math.MathUtils
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.util.ResourceLocation
-import java.util.*
 
 object LiquidBounce {
 
     // Client information
 
     const val CLIENT_NAME = "LiquidX"
-
     const val CLIENT_PREFIX = "§3§lLiquidX §8» "
-    const val BIG_NAME = "§3§lLiquidX §f§lClient"
+    const val CLIENT_COLOR_NAME = "§3§lLiquidX §f§lClient"
     const val CLIENT_CREATOR = "Prah"
-    const val CLIENT_RELEASE = "Legacy Release"
+    const val CLIENT_RELEASE = "Final Update"
     const val CLIENT_IP = "www.liquidx.net"
-    val UID = MathUtils.randomNumber(600, 1)
+    val CLIENT_UID = MathUtils.randomNumber(1200, 1)
 
 
-    // Dark mode :skull:
+    // Dark mode
     var Darkmode = true
-    
-    @JvmField
-    val gitInfo = Properties().also {
-        val inputStream = LiquidBounce::class.java.classLoader.getResourceAsStream("git.properties")
-        if (inputStream != null) {
-            it.load(inputStream)
-        } else {
-            it["git.branch"] = "main"
-        }
-    }
-
-    @JvmField
-
-    val CLIENT_VERSION = "v3.1"
 
 
     @JvmField
-    val CLIENT_BRANCH = (gitInfo["git.branch"] ?: "unknown").let {
-        if (it == "main") "Diana Edition" else it
-    }
+
+    val CLIENT_VERSION = "v3.3"
+
+
+    @JvmField
+    val CLIENT_BRANCH = "Micaela Edition"
 
     var isStarting = true
     var isLoadingConfig = true
@@ -193,6 +181,14 @@ object LiquidBounce {
             it.start()
         }
 
+        LiquidXRPC.stop()
+        Rise6RPC.stop()
+        IntentRPC.stop()
+        SigmaRPC.stop()
+        CustomRPC.stop()
+        LunarRPC.stop()
+
+
         // Load configs
         configManager.loadLegacySupport()
         configManager.loadConfigSet()
@@ -224,7 +220,13 @@ object LiquidBounce {
             }
         }
         try {
-            DiscordRPC.stop()
+            LiquidXRPC.stop()
+            Rise6RPC.stop()
+            IntentRPC.stop()
+            SigmaRPC.stop()
+            CustomRPC.stop()
+            LunarRPC.stop()
+
         } catch (e: Throwable) {
             ClientUtils.logError("Failed to shutdown DiscordRPC.", e)
         }

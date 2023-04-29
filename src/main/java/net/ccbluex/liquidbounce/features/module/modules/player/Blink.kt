@@ -28,7 +28,6 @@ import java.util.concurrent.LinkedBlockingQueue
 class Blink : Module() {
 
     private val inboundValue = BoolValue("Inbound", false)
-    private val outboundValue = BoolValue("Outbound", true)
     private val UniversoCraftFix = BoolValue("UniversoFix", false)
     private val pulseValue = BoolValue("Pulse", false)
     private val pulseDelayValue = IntegerValue("PulseDelay", 1000, 500, 5000).displayable { pulseValue.get() }

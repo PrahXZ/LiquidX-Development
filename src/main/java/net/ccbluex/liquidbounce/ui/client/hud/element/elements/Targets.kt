@@ -34,12 +34,10 @@ import java.util.*
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
-// I wish you luck targethuds as I did not test you on fdp
-
 @ElementInfo(name = "Targets")
 open class Targets : Element(-46.0, -40.0, 1F, Side(Side.Horizontal.MIDDLE, Side.Vertical.MIDDLE)) {
 
-    val modeValue = ListValue("Mode", arrayOf("FDP", "Bar", "Chill", "Rice", "Slowly", "Remix", "Novoline", "Novoline2" , "Astolfo", "Liquid", "Flux", "Rise", "Exhibition", "ExhibitionOld", "Zamorozka", "Arris", "Tenacity", "Tenacity5", "TenacityNew", "WaterMelon", "SparklingWater"), "FDP")
+    val modeValue = ListValue("Mode", arrayOf("Chill", "Rice", "Slowly", "Remix", "Novoline", "Astolfo", "Liquid", "Flux", "Rise", "Exhibition", "Zamorozka", "Arris", "Tenacity", "Tenacity5", "TenacityNew", "WaterMelon", "SparklingWater"), "LiquidX")
     private val modeRise = ListValue("RiseMode", arrayOf("Original", "New1", "New2", "Rise6"), "Rise6").displayable { modeValue.equals("Rise") }
 
     private val chillFontSpeed = FloatValue("Chill-FontSpeed", 0.5F, 0.01F, 1F).displayable { modeValue.equals("Chill") }
@@ -304,9 +302,7 @@ open class Targets : Element(-46.0, -40.0, 1F, Side(Side.Horizontal.MIDDLE, Side
 
 
         when (modeValue.get().lowercase()) {
-            "fdp" -> drawFDP(prevTarget!!)
             "novoline" -> drawNovo(prevTarget!!)
-            "novoline2" -> drawNovo2(prevTarget!!)
             "astolfo" -> drawAstolfo(prevTarget!!)
             "liquid" -> drawLiquid(prevTarget!!)
             "flux" -> drawFlux(prevTarget!!)
@@ -331,8 +327,6 @@ open class Targets : Element(-46.0, -40.0, 1F, Side(Side.Horizontal.MIDDLE, Side
             "watermelon" -> drawWaterMelon(prevTarget!!)
             "sparklingwater" -> drawSparklingWater(prevTarget!!)
             "exhibition" -> drawExhibition(prevTarget!! as EntityPlayer)
-            "exhibitionold" -> drawExhibitionOld(prevTarget!! as EntityPlayer)
-            "bar" -> drawBar(prevTarget!!)
         }
 
         return getTBorder()
@@ -896,41 +890,6 @@ open class Targets : Element(-46.0, -40.0, 1F, Side(Side.Horizontal.MIDDLE, Side
         }
     }
 
-    private fun drawFDP(target: EntityLivingBase) {
-        val font = fontValue.get()
-        val addedLen = (60 + font.getStringWidth(target.name) * 1.60f).toFloat()
-
-        RenderUtils.drawRect(0f, 0f, addedLen, 47f, Color(0, 0, 0, 120).rgb)
-        RenderUtils.drawRoundedCornerRect(0f, 0f, (easingHP / target.maxHealth) * addedLen, 47f, 3f, Color(0, 0, 0, 90).rgb)
-
-        RenderUtils.drawShadow(0f, 0f, addedLen, 47f)
-
-        val hurtPercent = target.hurtPercent
-        val scale = if (hurtPercent == 0f) { 1f } else if (hurtPercent < 0.5f) {
-            1 - (0.1f * hurtPercent * 2)
-        } else {
-            0.9f + (0.1f * (hurtPercent - 0.5f) * 2)
-        }
-        val size = 35
-
-        GL11.glPushMatrix()
-        GL11.glTranslatef(5f, 5f, 0f)
-        // 受伤的缩放效果
-        GL11.glScalef(scale, scale, scale)
-        GL11.glTranslatef(((size * 0.5f * (1 - scale)) / scale), ((size * 0.5f * (1 - scale)) / scale), 0f)
-        // 受伤的红色效果
-        GL11.glColor4f(1f, 1 - hurtPercent, 1 - hurtPercent, 1f)
-        // 绘制头部图片
-        RenderUtils.quickDrawHead(target.skin, 0, 0, size, size)
-        GL11.glPopMatrix()
-
-        GL11.glPushMatrix()
-        GL11.glScalef(1.5f, 1.5f, 1.5f)
-        font.drawString(target.name, 39, 8, Color.WHITE.rgb)
-        GL11.glPopMatrix()
-        font.drawString("Health ${getHealth(target).roundToInt()}", 56, 12 + (font.FONT_HEIGHT * 1.5).toInt(), Color.WHITE.rgb)
-
-    }
 
     private fun drawExhibition(entity: EntityPlayer) {
         val font = Fonts.fontTahoma
@@ -997,69 +956,6 @@ open class Targets : Element(-46.0, -40.0, 1F, Side(Side.Horizontal.MIDDLE, Side
         GL11.glPopMatrix()
     }
 
-    private fun drawExhibitionOld(entity: EntityPlayer) {
-        val font = Fonts.minecraftFont
-        val minWidth = 126F.coerceAtLeast(47F + font.getStringWidth(entity.name))
-
-        RenderUtils.drawRect(5F, 2F, minWidth - 5f, 41F, Color(0, 0, 0, 170).rgb)
-        // RenderUtils.drawRect(3F, 3F, 42F, 42F, getColor(Color(19, 19, 19)).rgb)
-
-        GL11.glColor4f(1f, 1f, 1f, 1f - getFadeProgress())
-        RenderUtils.drawEntityOnScreen(22, 40, 16, entity)
-
-        Fonts.minecraftFont.drawStringWithShadow(entity.name, 46f, 5f, getColor(-1).rgb)
-
-        val barLength = 70F * (entity.health / entity.maxHealth).coerceIn(0F, 1F)
-        RenderUtils.drawRect(45F, 14F, 45F + 70F, 18F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth).darker(0.3F)).rgb)
-        RenderUtils.drawRect(45F, 14F, 45F + barLength, 18F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth)).rgb)
-
-        for (i in 0..9)
-            RenderUtils.drawRectBasedBorder(45F + i * 7F, 14F, 45F + (i + 1) * 7F, 18F, 0.5F, Color(20, 20, 20, 200).rgb)
-
-        Fonts.fontTahomaSmall.drawString("HP:${entity.health.toInt()} | Dist:${mc.thePlayer.getDistanceToEntityBox(entity).toInt()}", 45F, 21F, getColor(-1).rgb)
-
-        GlStateManager.resetColor()
-        GL11.glPushMatrix()
-        GL11.glColor4f(1f, 1f, 1f, 1f - getFadeProgress())
-        GlStateManager.enableRescaleNormal()
-        GlStateManager.enableBlend()
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
-        RenderHelper.enableGUIStandardItemLighting()
-
-        val renderItem = mc.renderItem
-
-        var x = 40
-        var y = 25
-
-        for (index in 3 downTo 0) {
-            val stack = entity.inventory.armorInventory[index] ?: continue
-
-            if (stack.item == null)
-                continue
-
-            renderItem.renderItemIntoGUI(stack, x, y)
-            renderItem.renderItemOverlays(mc.fontRendererObj, stack, x, y)
-            RenderUtils.drawExhiEnchants(stack, x.toFloat(), y.toFloat())
-
-            x += 16
-        }
-
-        val mainStack = entity.heldItem
-        if (mainStack != null && mainStack.item != null) {
-            renderItem.renderItemIntoGUI(mainStack, x, y)
-            renderItem.renderItemOverlays(mc.fontRendererObj, mainStack, x, y)
-            RenderUtils.drawExhiEnchants(mainStack, x.toFloat(), y.toFloat())
-        }
-
-        RenderHelper.disableStandardItemLighting()
-        GlStateManager.disableRescaleNormal()
-        GlStateManager.enableAlpha()
-        GlStateManager.disableBlend()
-        GlStateManager.disableLighting()
-        GlStateManager.disableCull()
-        GL11.glPopMatrix()
-
-    }
 
     private fun drawFlux(target: EntityLivingBase) {
         val width = (38 + target.name.let(Fonts.font40::getStringWidth))
@@ -1957,10 +1853,8 @@ open class Targets : Element(-46.0, -40.0, 1F, Side(Side.Horizontal.MIDDLE, Side
     fun getTBorder(): Border? {
         return when (modeValue.get().lowercase()) {
             "novoline" -> Border(0F, 0F, 140F, 40F)
-            "novoline2" -> Border(0F, 0F, 140F, 40F)
             "astolfo" -> Border(0F, 0F, 140F, 60F)
             "liquid" -> Border(0F, 0F, (38 + mc.thePlayer.name.let(Fonts.font40::getStringWidth)).coerceAtLeast(118).toFloat(), 36F)
-            "fdp" -> Border(0F, 0F, 150F, 47F)
             "flux" -> Border(0F, 0F, (38 + mc.thePlayer.name.let(Fonts.font40::getStringWidth))
                 .coerceAtLeast(70)
                 .toFloat(), 34F)
@@ -1986,7 +1880,6 @@ open class Targets : Element(-46.0, -40.0, 1F, Side(Side.Horizontal.MIDDLE, Side
             "exhibitionold" -> Border(2F, 1F, 122F, 40F)
             "watermelon" -> Border(0F, 0F, 120F, 48F)
             "sparklingwater" -> Border(0F, 0F, 120F, 48F)
-            "bar" -> Border(3F, 22F, 115F, 42F)
             else -> null
         }
     }

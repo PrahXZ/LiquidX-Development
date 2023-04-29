@@ -106,7 +106,7 @@ class ScoreboardElement(
                 for (domain in allowedDomains) {
                     if (name.contains(domain, true)) {
                         name = when (serverValue.get().lowercase()) {
-                            "clientname" -> LiquidBounce.BIG_NAME
+                            "clientname" -> LiquidBounce.CLIENT_COLOR_NAME
                             "website" -> LiquidBounce.CLIENT_IP
                             else -> "null"
                         }

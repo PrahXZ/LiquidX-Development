@@ -21,11 +21,11 @@ import kotlin.math.*
 class PointerESP : Module() {
     private val dimensionValue = ListValue("Dimension", arrayOf("2d", "3d"), "2d")
     private val modeValue = ListValue("Mode", arrayOf("Solid", "Line", "LoopLine"), "Solid")
-    private val lineWidthValue = FloatValue("LineWidth", 4f, 1f, 10f).displayable { modeValue.get().contains("Line") }
+    private val lineWidthValue = FloatValue("LineWidth", 4f, 1f, 10f).displayable { modeValue.equals("Line") }
+    private val rainbowValue = BoolValue("Rainbow", false)
     private val redValue = IntegerValue("Red", 255, 0, 255).displayable { !rainbowValue.get() }
     private val greenValue = IntegerValue("Green", 255, 0, 255).displayable { !rainbowValue.get() }
     private val blueValue = IntegerValue("Blue", 255, 0, 255).displayable { !rainbowValue.get() }
-    private val rainbowValue = BoolValue("Rainbow", false)
     private val damageColorValue = BoolValue("DamageColor", true)
     private val smoothDamageColorValue = BoolValue("SmoothDamageColor", false)
     private val dmgRedValue = IntegerValue("DamageRed", 255, 0, 255).displayable { !dmgRainbowValue.get() && damageColorValue.get() }

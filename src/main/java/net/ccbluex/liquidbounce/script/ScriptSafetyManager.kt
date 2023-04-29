@@ -17,7 +17,7 @@ import java.util.*
 
 object ScriptSafetyManager {
 
-    private val level = ProtectionLevel.valueOf((System.getProperty("fdp.script.safety") ?: "safe").uppercase()).level
+    private val level = ProtectionLevel.valueOf((System.getProperty("liquidx.script.safety") ?: "safe").uppercase()).level
     private val restrictedClasses: Map<Class<*>, Int>
     private val restrictedChilds: Map<Class<*>, Pair<String, Int>>
 
@@ -94,21 +94,6 @@ object ScriptSafetyManager {
         return false
     }
 
-    fun isRestricted(classIn: Class<*>, child: String): Boolean {
-        var klass = classIn
-        while (klass != Any::class.java) {
-            if (isRestrictedSimple(klass, child)) {
-                return true
-            }
-            if(klass.superclass != null) {
-                klass = klass.superclass
-            } else {
-                break
-            }
-        }
-        return false
-    }
-
     fun isRestrictedSimple(klass: Class<*>): Boolean {
         return if(restrictedClasses.containsKey(klass) && restrictedClasses[klass]!! > level) {
             warnRestricted(klass.name, "")
@@ -139,7 +124,7 @@ object ScriptSafetyManager {
             ClientUtils.logWarn("[ScriptAPI] \n" +
                     "========= WARNING =========\n" +
                     "The script tried to make a restricted call: $message,\n" +
-                    "please add a jvm argument to disable this check: -Dfdp.script.safety=HARMFUL\n" +
+                    "please add a jvm argument to disable this check: -noverify\n" +
                     "===========================")
         }
     }

@@ -49,9 +49,7 @@ class Crosshair : Module() {
         RenderUtils.drawBorderedRect(sr.scaledWidth / 2f + 1 + gap + if (isMoving) 2 else 0, sr.scaledHeight / 2f - width, sr.scaledWidth / 2f + size + gap + 1.0f + if (isMoving) 2 else 0, sr.scaledHeight / 2 + 1.0f + width, 0.5f, Color(0, 0, 0).rgb, crosshairColor.rgb)
         GL11.glPopMatrix()
         GlStateManager.resetColor()
-        val target = LiquidBounce.combatManager.target/* ?: RaycastUtils.raycastEntity(Reach.hitReach.toDouble()) {
-            it is EntityLivingBase
-        } as EntityLivingBase? */
+        val target = LiquidBounce.combatManager.target
         if (hitMarkerValue.get() && target != null && target.hurtTime > 0) {
             GL11.glPushMatrix()
             GlStateManager.enableBlend()
@@ -84,10 +82,10 @@ class Crosshair : Module() {
 
     private val crosshairColor: Color
         get() =
-            when (colorModeValue.get().lowercase()) {
-                "custom" -> Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get(), colorAlphaValue.get())
-                "slowly" -> ColorUtils.reAlpha(ColorUtils.slowlyRainbow(System.nanoTime(), 0, saturationValue.get(), brightnessValue.get()), colorAlphaValue.get())
-                "rainbow" -> ColorUtils.rainbowWithAlpha(colorAlphaValue.get())
+            when (colorModeValue.get()) {
+                "Custom" -> Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get(), colorAlphaValue.get())
+                "Slowly" -> ColorUtils.reAlpha(ColorUtils.slowlyRainbow(System.nanoTime(), 0, saturationValue.get(), brightnessValue.get()), colorAlphaValue.get())
+                "Rainbow" -> ColorUtils.rainbowWithAlpha(colorAlphaValue.get())
                 else -> Color.WHITE
             }
 }

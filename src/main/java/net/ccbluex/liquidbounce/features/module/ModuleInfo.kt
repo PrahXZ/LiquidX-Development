@@ -13,7 +13,6 @@ annotation class ModuleInfo(
     val autoDisable: EnumAutoDisableType = EnumAutoDisableType.NONE,
     val moduleCommand: Boolean = true,
     val defaultOn: Boolean = false,
-    val forceNoSound: Boolean = false,
     val triggerType: EnumTriggerType = EnumTriggerType.TOGGLE
 )
 

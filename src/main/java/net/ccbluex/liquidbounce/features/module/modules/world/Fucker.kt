@@ -6,7 +6,7 @@ import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
-import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
+import net.ccbluex.liquidbounce.features.module.modules.combat.OldKillAura
 import net.ccbluex.liquidbounce.features.module.modules.player.AutoTool
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NotifyType
@@ -42,7 +42,7 @@ object Fucker : Module() {
     private val blockValue = BlockValue("Block", 26)
     private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
     private val throughWallsValue = ListValue("ThroughWalls", arrayOf("None", "Raycast", "Around"), "None")
-    private val renderValue = ListValue("Render-Mode", arrayOf("Box", "Outline", "2D", "None"), "Box")
+    private val renderValue = ListValue("Render-Mode", arrayOf("Box", "2D", "None"), "Box")
     private val rangeValue = FloatValue("Range", 5F, 1F, 7F)
     private val actionValue = ListValue("Action", arrayOf("Destroy", "Use"), "Destroy")
     private val ignoreFirstBlockValue = BoolValue("IgnoreFirstDetection", false)
@@ -91,7 +91,7 @@ object Fucker : Module() {
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
         if (noHitValue.get()) {
-            val killAura = LiquidBounce.moduleManager[KillAura::class.java]!!
+            val killAura = LiquidBounce.moduleManager[OldKillAura::class.java]!!
 
             if (killAura.state && killAura.target != null) {
                 return
@@ -241,7 +241,6 @@ object Fucker : Module() {
         fun onRender3D(event: Render3DEvent) {
             when (renderValue.get().lowercase()) {
                 "box" -> RenderUtils.drawBlockBox(pos ?: return, if (!coolDownTimer.hasTimePassed(coolDownValue.get().toLong() * 1000L)) Color.DARK_GRAY else Color.RED, false)
-                "outline" -> RenderUtils.drawBlockBox(pos ?: return, if (!coolDownTimer.hasTimePassed(coolDownValue.get().toLong() * 1000L)) Color.DARK_GRAY else Color.RED, true)
                 "2d" -> RenderUtils.draw2D(pos ?: return, if (!coolDownTimer.hasTimePassed(coolDownValue.get().toLong() * 1000L)) Color.DARK_GRAY.rgb else Color.RED.rgb, Color.BLACK.rgb)
             }
         }

@@ -1,9 +1,6 @@
 package net.ccbluex.liquidbounce.features.module.modules.movement.flys.other
 
-import net.ccbluex.liquidbounce.event.BlockBBEvent
-import net.ccbluex.liquidbounce.event.MoveEvent
-import net.ccbluex.liquidbounce.event.PacketEvent
-import net.ccbluex.liquidbounce.event.UpdateEvent
+import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.modules.movement.flys.FlyMode
 import net.ccbluex.liquidbounce.features.value.*
 import net.ccbluex.liquidbounce.utils.MovementUtils
@@ -11,15 +8,19 @@ import net.ccbluex.liquidbounce.utils.PacketUtils
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
+import net.minecraft.network.play.client.C00PacketKeepAlive
 import net.minecraft.network.play.client.C03PacketPlayer
+import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition
+import net.minecraft.network.play.client.C03PacketPlayer.C05PacketPlayerLook
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement
+import net.minecraft.network.play.client.C0CPacketInput
 
 class Universo : FlyMode("Universocraft") {
     private val onlyDamageValue = BoolValue("${valuePrefix}OnlyDamage", true)
     private val selfDamageValue = BoolValue("${valuePrefix}SelfDamage", true)
 
 
-    var stage = 0
+    var canBoost = false
     var ticks = 0
     var timer = MSTimer()
     var movespeed = 0.0
@@ -94,11 +95,18 @@ class Universo : FlyMode("Universocraft") {
             if (flyTicks > 4) {
                 flyTicks = 4
             }
+
+        if (mc.thePlayer.onGround) {
+            mc.thePlayer.motionX = 0.0
+            mc.thePlayer.motionZ = 0.0
+        }
+
         }
 
     override fun onEnable() {
         flyTicks = 0
         movespeed = 1.0
+        canBoost = true
         waitFlag = false
         isStarted = false
         isDamaged = false
@@ -115,20 +123,38 @@ class Universo : FlyMode("Universocraft") {
         if (packet is C03PacketPlayer && (dmgJumpCount < 4 && selfDamageValue.get())) {
             packet.onGround = false
         }
+        if (isDamaged) {
+            if (packet is C03PacketPlayer) {
+                packet.onGround = false
+            }
+            if (packet is C00PacketKeepAlive) {
+                event.cancelEvent()
+            }
+            if (packet is C0CPacketInput) {
+                event.cancelEvent()
+            }
+            if (packet is C04PacketPlayerPosition) {
+                packet.isMoving = false
+            }
+        }
     }
 
     override fun onDisable() {
         MovementUtils.resetMotion(true)
         timer.reset()
+        isDamaged = false
+    }
+
+    override fun onJump(event: JumpEvent) {
+        canBoost = true
     }
 
     override fun onMove(event: MoveEvent) {
         if (isDamaged) {
-            val pos = mc.thePlayer.position.add(0.0, 3.0, 0.0)
+            val pos = mc.thePlayer.position.add(1.0, 1.0, 1.0)
             PacketUtils.sendPacketNoEvent(C08PacketPlayerBlockPlacement(pos, 1, ItemStack(Blocks.sand.getItem(mc.theWorld, pos)), 0.0F, 0.5F + Math.random().toFloat() * 0.44.toFloat(), 0.0F))
-            event.y = 0.0
+            event.y =1.0e-4
+            MovementUtils.strafe(2f)
         }
-        movespeed -= movespeed / 156.0
-        MovementUtils.strafe(movespeed.toFloat())
     }
 }

@@ -66,5 +66,5 @@ public abstract class MixinEffectRenderer {
     private void removeBlockBreakingParticles_Forge(CallbackInfo ci) {
         if (Animations.getNoBlockParticles().get())
             ci.cancel();
-}
+    }
 }

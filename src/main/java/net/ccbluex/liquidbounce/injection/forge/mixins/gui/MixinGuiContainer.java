@@ -4,7 +4,7 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.KeyEvent;
 import net.ccbluex.liquidbounce.features.module.modules.client.Animations;
-import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
+import net.ccbluex.liquidbounce.features.module.modules.combat.OldKillAura;
 import net.ccbluex.liquidbounce.features.module.modules.world.ChestStealer;
 import net.ccbluex.liquidbounce.ui.i18n.LanguageManager;
 import net.ccbluex.liquidbounce.utils.extensions.RendererExtensionKt;
@@ -55,7 +55,7 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button.id == 114514)
-            LiquidBounce.moduleManager.getModule(KillAura.class).setState(false);
+            LiquidBounce.moduleManager.getModule(OldKillAura.class).setState(false);
         if (button.id == 1919810)
             LiquidBounce.moduleManager.getModule(ChestStealer.class).setState(false);
     }

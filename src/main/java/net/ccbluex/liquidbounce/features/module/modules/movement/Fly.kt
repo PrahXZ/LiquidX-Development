@@ -154,7 +154,7 @@ class Fly : Module() {
             mode -> mode.values.forEach { value ->
             val displayableFunction = value.displayableFunction
             it.add(value.displayable { displayableFunction.invoke() && modeValue.equals(mode.modeName) })
-        }
+            }
         }
     }
 }

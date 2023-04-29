@@ -40,10 +40,6 @@ class Script(private val scriptFile: File) : MinecraftInstance() {
         return isEnable;
     }
 
-    fun getRegisteredModules(): MutableList<Module> {
-        return registeredModules;
-    }
-
     init {
         //Main
         scriptEngine.put("Chat", StaticClass.forClass(Chat::class.java))

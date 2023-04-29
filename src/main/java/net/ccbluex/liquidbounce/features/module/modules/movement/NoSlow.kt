@@ -6,7 +6,7 @@ import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
-import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
+import net.ccbluex.liquidbounce.features.module.modules.combat.OldKillAura
 import net.ccbluex.liquidbounce.utils.MovementUtils 
 import net.ccbluex.liquidbounce.utils.PacketUtils
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
@@ -25,7 +25,7 @@ import kotlin.math.sqrt
 @ModuleInfo(name = "NoSlow", category = ModuleCategory.MOVEMENT)
 class NoSlow : Module() {
     //Basic settings
-    private val modeValue = ListValue("PacketMode", arrayOf("Vanilla", "LiquidBounce", "Universocraft", "Custom", "WatchDog", "Watchdog2", "NCP", "AAC", "AAC4", "AAC5", "Matrix", "Vulcan","Medusa"), "Vanilla")
+    private val modeValue = ListValue("PacketMode", arrayOf("Vanilla", "LiquidBounce", "Custom", "WatchDog", "Watchdog2", "NCP", "AAC", "AAC4", "AAC5", "Matrix", "Vulcan","Medusa"), "Vanilla")
     private val onlyGround = BoolValue("OnlyGround", false)
     private val onlyMove = BoolValue("OnlyMove", false)
     //Modify Slowdown / Packets
@@ -148,7 +148,7 @@ class NoSlow : Module() {
             return
         }
         
-        val killAura = LiquidBounce.moduleManager[KillAura::class.java]!!
+        val killAura = LiquidBounce.moduleManager[OldKillAura::class.java]!!
         val heldItem = mc.thePlayer.heldItem?.item
         if (consumeModifyValue.get() && mc.thePlayer.isUsingItem && (heldItem is ItemFood || heldItem is ItemPotion || heldItem is ItemBucketMilk)) {
             if ((consumeTimingValue.equals("Pre") && event.eventState == EventState.PRE) || (consumeTimingValue.equals("Post") && event.eventState == EventState.POST)) {
@@ -169,25 +169,6 @@ class NoSlow : Module() {
             when (modeValue.get().lowercase()) {
                 "liquidbounce" -> {
                     sendPacket(event, sendC07 = true, sendC08 = true, delay = false, delayValue = 0, onGround = false)
-                }
-                "universocraft" -> {
-                    if ((mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking) && timer.hasTimePassed(placeDelay)) {
-                        mc.playerController.syncCurrentPlayItem()
-                        mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))
-                        if (event.eventState == EventState.POST) {
-                            placeDelay = 200L
-                            if (fasterDelay) {
-                                placeDelay = 100L
-                                fasterDelay = false
-                            } else
-                                fasterDelay = true
-                            timer.reset()
-                        }
-                    }
-                    else {
-                        if (!mc.thePlayer.isBlocking && !killAura.blockingStatus)
-                            return
-                    }
                 }
 
                 "aac" -> {
@@ -321,7 +302,7 @@ class NoSlow : Module() {
     }
 
     private val isBlocking: Boolean
-        get() = (mc.thePlayer.isUsingItem || LiquidBounce.moduleManager[KillAura::class.java]!!.blockingStatus) && mc.thePlayer.heldItem != null && mc.thePlayer.heldItem.item is ItemSword
+        get() = (mc.thePlayer.isUsingItem || LiquidBounce.moduleManager[OldKillAura::class.java]!!.blockingStatus) && mc.thePlayer.heldItem != null && mc.thePlayer.heldItem.item is ItemSword
 
     @EventTarget
     fun onPacket(event: PacketEvent) {
