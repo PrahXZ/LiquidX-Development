@@ -7,6 +7,7 @@ import net.ccbluex.liquidbounce.utils.MovementUtils
 class LegitSpeed : SpeedMode("Legit") {
     override fun onPreMotion() {
         if (mc.thePlayer.isInWater) return
+        mc.gameSettings.keyBindJump.pressed = false
         if (MovementUtils.isMoving()) {
             if (mc.thePlayer.onGround) mc.thePlayer.jump()
         }

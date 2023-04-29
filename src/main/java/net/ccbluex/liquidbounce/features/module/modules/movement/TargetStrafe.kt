@@ -17,121 +17,15 @@ import org.lwjgl.input.Keyboard
 
 @ModuleInfo(name = "TargetStrafe",  category = ModuleCategory.MOVEMENT)
 class TargetStrafe : Module() {
-    val range = FloatValue("Range", 2.0f, 0.1f, 4.0f).displayable { !behind.get() }
-    private val modeValue = ListValue("KeyMode", arrayOf("Jump", "None"), "Jump")
-    private val safewalk = BoolValue("SafeWalk", true)
-    val behind = BoolValue("Behind", false)
-    val thirdPerson = BoolValue("ThirdPerson", false)
-    val killAura = LiquidBounce.moduleManager.getModule(KillAura::class.java)
-    val speed = LiquidBounce.moduleManager.getModule(Speed::class.java)
-    val longJump = LiquidBounce.moduleManager.getModule(LongJump::class.java)
-    val flight = LiquidBounce.moduleManager.getModule(Fly::class.java)
+    val straferange = FloatValue("Range", 2.0f, 0.1f, 4.0f) // esto es para saber a que distancia del jugador se calculara la direccion
+    private val modeValue = ListValue("KeyMode", arrayOf("Jump", "None"), "Jump") // esto es para saber si se activara solo cuando apretes la tecla espacio (Jump) o siempre (None)
+    private val safewalk = BoolValue("SafeWalk", true) // Esto es para que no te caigas al vacio
+    private val mark = BoolValue("Mark", true) // Aca puedes hacer un circulo dependiendo de la distancia osea usando la primera variable y de ahi renderizar el circulo, a este puedes ponerle colores custom
 
-    var direction = 1
-    var lastView = 0
-    var hasChangedThirdPerson = true
+    // Los colores del mark en orden
+    private val colorRedValue = IntegerValue("R", 0, 0, 255).displayable { mark.get() }
+    private val colorGreenValue = IntegerValue("G", 160, 0, 255).displayable { mark.get() }
+    private val colorBlueValue = IntegerValue("B", 255, 0, 255).displayable { mark.get() }
 
-    override fun onEnable() {
-        hasChangedThirdPerson = true
-        lastView = mc.gameSettings.thirdPersonView
-    }
-
-    @EventTarget
-    fun onMotion(event: MotionEvent) {
-
-        if (thirdPerson.get()) { // smart change back lol
-            if (canStrafe) {
-                if (hasChangedThirdPerson) lastView = mc.gameSettings.thirdPersonView
-                mc.gameSettings.thirdPersonView = 1
-                hasChangedThirdPerson = false
-            } else if (!hasChangedThirdPerson) {
-                mc.gameSettings.thirdPersonView = lastView
-                hasChangedThirdPerson = true
-            }
-        }
-
-        if (event.eventState == EventState.PRE) {
-            if (mc.thePlayer.isCollidedHorizontally || safewalk.get() && checkVoid() && !flight!!.state)
-                this.direction = -this.direction
-        }
-    }
-
-    @EventTarget
-    fun onMove(event: MoveEvent) {
-        if (canStrafe) {
-            strafe(event, MovementUtils.getSpeed().toInt())
-
-            if (safewalk.get() && checkVoid() && !flight!!.state)
-                event.isSafeWalk = true
-        }
-    }
-
-    fun strafe(event: MoveEvent, moveSpeed: Int) {
-        if (killAura?.target == null) return
-        val target = killAura.target
-
-        val rotYaw = RotationUtils.getRotationsEntity(killAura.target!!).yaw
-
-        if (mc.thePlayer.getDistanceToEntity(target) <= 1.5)
-            MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 0.0)
-        else
-            MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 1.0)
-
-        if (behind.get()) {
-            val xPos: Double = target!!.posX + -Math.sin(Math.toRadians(target.rotationYaw.toDouble())) * -2
-            val zPos: Double = target.posZ + Math.cos(Math.toRadians(target.rotationYaw.toDouble())) * -2
-            event.x = ((moveSpeed * -MathHelper.sin(
-                    Math.toRadians(RotationUtils.getRotations1(xPos, target.posY, zPos)[0].toDouble())
-                            .toFloat()
-            )).toDouble())
-            event.z = ((moveSpeed * MathHelper.cos(
-                    Math.toRadians(RotationUtils.getRotations1(xPos, target.posY, zPos)[0].toDouble())
-                            .toFloat()
-            )).toDouble())
-        } else {
-            if (mc.thePlayer.getDistanceToEntity(target) <= range.get())
-                MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 0.0)
-            else
-                MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 1.0)
-        }
-    }
-
-
-    val keyMode: Boolean
-        get() = when (modeValue.get()) {
-            "Jump" -> Keyboard.isKeyDown(Keyboard.KEY_SPACE)
-            "None" -> mc.thePlayer.movementInput.moveStrafe != 0f || mc.thePlayer.movementInput.moveForward != 0f
-            else -> false
-        }
-
-    val canStrafe: Boolean
-        get() = (state && (speed!!.state || flight!!.state || longJump!!.state) && killAura!!.state && killAura.target != null && !mc.thePlayer.isSneaking && keyMode && mc.gameSettings.keyBindForward.isKeyDown && !mc.gameSettings.keyBindRight.isKeyDown && !mc.gameSettings.keyBindLeft.isKeyDown && !mc.gameSettings.keyBindBack.isKeyDown)
-
-    private fun checkVoid(): Boolean {
-        for (x in -1..0) {
-            for (z in -1..0) {
-                if (isVoid(x, z)) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-
-    private fun isVoid(X: Int, Z: Int): Boolean {
-        if (mc.thePlayer.posY < 0.0) {
-            return true
-        }
-        var off = 0
-        while (off < mc.thePlayer.posY.toInt() + 2) {
-            val bb: AxisAlignedBB = mc.thePlayer.entityBoundingBox.offset(X.toDouble(), (-off).toDouble(), Z.toDouble())
-            if (mc.theWorld!!.getCollidingBoundingBoxes(mc.thePlayer as Entity, bb).isEmpty()) {
-                off += 2
-                continue
-            }
-            return false
-            off += 2
-        }
-        return true
-    }
 }
+

@@ -28,7 +28,6 @@ import java.util.concurrent.LinkedBlockingQueue
 class Blink : Module() {
 
     private val inboundValue = BoolValue("Inbound", false)
-    private val UniversoCraftFix = BoolValue("UniversoFix", false)
     private val pulseValue = BoolValue("Pulse", false)
     private val pulseDelayValue = IntegerValue("PulseDelay", 1000, 500, 5000).displayable { pulseValue.get() }
 
@@ -66,14 +65,6 @@ class Blink : Module() {
     @EventTarget
     fun onPacket(event: PacketEvent) {
         val packet = event.packet
-
-        if (UniversoCraftFix.get()) {
-            if(packet is C00PacketKeepAlive) {
-                event.cancelEvent()
-            }
-        }
-
-
 
         if (mc.thePlayer == null || disableLogger) return
         if (packet is C03PacketPlayer) { // Cancel all movement stuff

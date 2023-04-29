@@ -289,12 +289,10 @@ class KillAura : Module() {
     private val noScaffValue = BoolValue("NoScaffold", true)
     private val noFlyValue = BoolValue("NoFly", false)
 
-    // Debug
-    private val debugValue = BoolValue("Debug", false)
 
     // Visuals
-    private val circleValue = BoolValue("Circle", false)
     private val Mark = BoolValue("Mark", false)
+    private val circleValue = BoolValue("Circle", false)
     private val accuracyValue = IntegerValue("Accuracy", 0, 0, 59).displayable { circleValue.get() }
     private val red = IntegerValue("Red", 255, 0, 255).displayable { circleValue.get() }
     private val green = IntegerValue("Green", 0, 0, 255).displayable { circleValue.get() }
@@ -423,10 +421,6 @@ class KillAura : Module() {
      */
     @EventTarget
     fun onStrafe(event: StrafeEvent) {
-        val targetStrafe = LiquidBounce.moduleManager.getModule(TargetStrafe::class.java)!!
-        if (rotationStrafeValue.get().equals("Off", true) && !targetStrafe.state)
-            return
-
         update()
 
         if (currentTarget != null && RotationUtils.targetRotation != null) {
@@ -610,7 +604,7 @@ class KillAura : Module() {
     fun onRender3D(event: Render3DEvent) {
 
         if (Mark.get() && hitable && !targetModeValue.get().equals("Multi", ignoreCase = true)) {
-            RenderUtils.drawCircle1(target, if (hitable) Color(255, 255, 144, 70) else Color(255, 0, 0, 70))
+            RenderUtils.drawMarkCircle(target, if (hitable) Color(255, 255, 144, 70) else Color(255, 0, 0, 70))
 
         }
 
@@ -886,9 +880,6 @@ class KillAura : Module() {
                             mc.thePlayer.onGround
                     )
             )
-
-            if (debugValue.get())
-                ClientUtils.displayChatMessage("Silent rotation change.")
         }
 
         // Attack target
@@ -1002,8 +993,6 @@ class KillAura : Module() {
             val rotToTarget = RotationUtils.getRotations(targetX, targetY, targetZ)
 
             val limitedRotation = RotationUtils.limitAngleChange(RotationUtils.serverRotation, rotToTarget, (Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
-
-            if (debugValue.get()) ClientUtils.displayChatMessage("[Rot] ${limitedRotation.yaw} ${limitedRotation.pitch}")
 
             return limitedRotation
         }

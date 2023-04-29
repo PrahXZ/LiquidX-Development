@@ -75,16 +75,13 @@ class AntiVoid : Module() {
         when (modeValue.get().lowercase()) {
 
             "universocraft" -> {
-                canSpoof = false
                 if (!voidOnlyValue.get() || checkVoid()) {
-                    if (mc.thePlayer.fallDistance> maxFallDistValue.get() && mc.thePlayer.posY <lastRecY + 0.01 && mc.thePlayer.motionY <= 0 && !mc.thePlayer.onGround && !flagged) {
-                        mc.thePlayer.motionY = 0.0
-                        mc.thePlayer.motionZ *= 0.838
-                        mc.thePlayer.motionX *= 0.838
-                        canSpoof = true
+                    if (mc.thePlayer.fallDistance > maxFallDistValue.get() && !tried) {
+                        mc.thePlayer.motionY += 1f
+                        mc.thePlayer.fallDistance = 0.0F
+                        tried = true
                     }
                 }
-                lastRecY = mc.thePlayer.posY
             }
 
             "groundspoof" -> {
@@ -232,14 +229,6 @@ class AntiVoid : Module() {
         val packet = event.packet
 
         when (modeValue.get().lowercase()) {
-            "universocraft" -> {
-                if (canCancel && packet is C03PacketPlayer) {
-                    event.cancelEvent()
-                }
-                if (packet is S08PacketPlayerPosLook) {
-                    canCancel = false
-                }
-            }
             "blink" -> {
                 if (blink && (packet is C03PacketPlayer)) {
                     packetCache.add(packet)

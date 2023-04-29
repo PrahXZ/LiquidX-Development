@@ -33,7 +33,7 @@ object LiquidBounce {
     const val CLIENT_NAME = "LiquidX"
     const val CLIENT_PREFIX = "§3§lLiquidX §8» "
     const val CLIENT_COLOR_NAME = "§3§lLiquidX §f§lClient"
-    const val CLIENT_CREATOR = "Prah"
+    const val CLIENT_CREATOR = "Prah, Nerek"
     const val CLIENT_RELEASE = "Final Update"
     const val CLIENT_IP = "www.liquidx.net"
     val CLIENT_UID = MathUtils.randomNumber(1200, 1)

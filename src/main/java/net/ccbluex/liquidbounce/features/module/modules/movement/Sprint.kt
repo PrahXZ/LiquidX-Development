@@ -22,14 +22,14 @@ class Sprint : Module() {
 
 
     val jumpDirectionsValue = BoolValue("JumpDirectionFix", true)
-    val useItemValue = BoolValue("UseItem", false)
-    val allDirectionsValue = BoolValue("AllDirections", false)
-    val blindnessValue = BoolValue("Blindness", false)
-    val foodValue = BoolValue("Food", false)
-    val noPacketValue = BoolValue("NoPacket", false)
-    val checkServerSide = BoolValue("CheckServerSide", false)
-    val checkServerSideGround = BoolValue("CheckServerSideOnlyGround", false)
-    val packetomniSprint = BoolValue("PacketOmniSprint", false)
+    val useItemValue = BoolValue("UseItem", false).displayable { modeValue.equals("Custom") }
+    val allDirectionsValue = BoolValue("AllDirections", false).displayable { modeValue.equals("Custom") }
+    val blindnessValue = BoolValue("Blindness", false).displayable { modeValue.equals("Custom") }
+    val foodValue = BoolValue("Food", false).displayable { modeValue.equals("Custom") }
+    val noPacketValue = BoolValue("NoPacket", false).displayable { modeValue.equals("Custom") }
+    val checkServerSide = BoolValue("CheckServerSide", false).displayable { modeValue.equals("Custom") }
+    val checkServerSideGround = BoolValue("CheckServerSideOnlyGround", false).displayable { modeValue.equals("Custom") }
+    val packetomniSprint = BoolValue("PacketOmniSprint", false).displayable { modeValue.equals("Custom") }
 
     override val tag: String
         get() = modeValue.get()
@@ -60,19 +60,6 @@ class Sprint : Module() {
 
     @EventTarget
     fun onUpdate(event: UpdateEvent?) {
-
-        if (modeValue.equals("Legit")) {
-            allDirectionsValue.value = false
-            blindnessValue.value = false
-            foodValue.value = false
-            checkServerSide.value = false
-            checkServerSideGround.value = false
-            noPacketValue.value = false
-            packetomniSprint.value = false
-            useItemValue.value = false
-        }
-
-
         if (modeValue.equals("Custom")) {
             if (!isMoving() || mc.thePlayer.isSneaking || blindnessValue.get() && mc.thePlayer.isPotionActive(Potion.blindness) || foodValue.get() && !(mc.thePlayer.foodStats.foodLevel > 6.0f || mc.thePlayer.capabilities.allowFlying) || (checkServerSide.get() && (mc.thePlayer.onGround || !checkServerSideGround.get())
                             && !allDirectionsValue.get() && RotationUtils.targetRotation != null) && RotationUtils.getRotationDifference(Rotation(mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch)) > 30) {

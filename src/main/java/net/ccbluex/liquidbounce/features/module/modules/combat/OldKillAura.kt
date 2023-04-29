@@ -324,10 +324,6 @@ class OldKillAura : Module() {
      */
     @EventTarget
     fun onStrafe(event: StrafeEvent) {
-        val targetStrafe = LiquidBounce.moduleManager.getModule(TargetStrafe::class.java)!!
-        if (rotationStrafeValue.equals("Off") && !targetStrafe.state)
-            return
-
         update()
 
         if (currentTarget != null && RotationUtils.targetRotation != null) {

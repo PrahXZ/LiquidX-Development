@@ -12,7 +12,6 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NotifyType
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.RotationUtils
-import net.ccbluex.liquidbounce.utils.block.BlockUtils
 import net.ccbluex.liquidbounce.utils.block.BlockUtils.getBlock
 import net.ccbluex.liquidbounce.utils.block.BlockUtils.getBlockName
 import net.ccbluex.liquidbounce.utils.block.BlockUtils.getCenterDistance
@@ -21,6 +20,7 @@ import net.ccbluex.liquidbounce.utils.extensions.getEyeVec3
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.features.value.*
+import net.ccbluex.liquidbounce.utils.block.BlockUtils.isFullBlock
 import net.minecraft.block.Block
 import net.minecraft.block.BlockAir
 import net.minecraft.client.gui.ScaledResolution
@@ -100,8 +100,8 @@ object Fucker : Module() {
 
         val targetId = blockValue.get()
 
-        if (pos == null || Block.getIdFromBlock(BlockUtils.getBlock(pos)) != targetId ||
-            BlockUtils.getCenterDistance(pos!!) > rangeValue.get()) {
+        if (pos == null || Block.getIdFromBlock(getBlock(pos)) != targetId ||
+            getCenterDistance(pos!!) > rangeValue.get()) {
             pos = find(targetId)
         }
 
@@ -328,12 +328,12 @@ object Fucker : Module() {
 
                 movingObjectPosition != null && movingObjectPosition.blockPos == blockPos
             }
-            "around" -> !BlockUtils.isFullBlock(blockPos.down()) || !BlockUtils.isFullBlock(blockPos.up()) || !BlockUtils.isFullBlock(blockPos.north()) ||
-                    !BlockUtils.isFullBlock(blockPos.east()) || !BlockUtils.isFullBlock(blockPos.south()) || !BlockUtils.isFullBlock(blockPos.west())
+            "around" -> !isFullBlock(blockPos.down()) || !isFullBlock(blockPos.up()) || !isFullBlock(blockPos.north()) ||
+                    !isFullBlock(blockPos.east()) || !isFullBlock(blockPos.south()) || !isFullBlock(blockPos.west())
             else -> true
         }
     }
 
     override val tag: String
-        get() = BlockUtils.getBlockName(blockValue.get())
+        get() = getBlockName(blockValue.get())
 }

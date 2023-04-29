@@ -41,7 +41,6 @@ import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.GLUtessellator;
 import org.lwjgl.util.glu.GLUtessellatorCallbackAdapter;
 
-import javax.vecmath.Vector3d;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
@@ -1311,10 +1310,9 @@ public final class RenderUtils extends MinecraftInstance {
 
 
 
-    public static void drawCircle1(final Entity entity, final Color color) {
+    public static void drawMarkCircle(final Entity entity, final Color color) {
         final RenderManager renderManager = mc.getRenderManager();
         final Timer timer = mc.timer;
-
         final double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * timer.renderPartialTicks
                 - renderManager.renderPosX;
         final double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * timer.renderPartialTicks
@@ -1323,8 +1321,8 @@ public final class RenderUtils extends MinecraftInstance {
                 - renderManager.renderPosZ;
 
         final double radius = 0.65;
-        final double centerY1 = entity.height + - 0.7 + Math.sin(System.currentTimeMillis() * 0.005) * 0.70;
-
+        double centerY1 = entity.height + -0.7;
+        centerY1 += Math.sin(System.currentTimeMillis() * 0.005) * 0.70;
 
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
@@ -1335,18 +1333,16 @@ public final class RenderUtils extends MinecraftInstance {
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glLineWidth(2.0f);
         GL11.glColor4f(color.getGreen() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 0.4f);
-
-        GL11.glBegin(GL11.GL_LINES);
-
-        GL11.glEnd();
         GL11.glBegin(GL11.GL_TRIANGLES);
-        for (int i = 0; i < 360; i += 10) {
-            double radians1 = Math.toRadians(i);
-            double radians2 = Math.toRadians(i + 10);
-            double xCoord1 = radius * Math.cos(radians1);
-            double zCoord1 = radius * Math.sin(radians1);
-            double xCoord2 = radius * Math.cos(radians2);
-            double zCoord2 = radius * Math.sin(radians2);
+        int i = 0;
+        double radians1, radians2, xCoord1, zCoord1, xCoord2, zCoord2;
+        while (i < 360) {
+            radians1 = Math.toRadians(i);
+            radians2 = Math.toRadians(i + 10);
+            xCoord1 = radius * Math.cos(radians1);
+            zCoord1 = radius * Math.sin(radians1);
+            xCoord2 = radius * Math.cos(radians2);
+            zCoord2 = radius * Math.sin(radians2);
             GL11.glVertex3d(xCoord1, centerY1, zCoord1);
             GL11.glVertex3d(xCoord2, centerY1, zCoord2);
             GL11.glVertex3d(xCoord1, centerY1 + 0.07, zCoord1);
@@ -1354,9 +1350,9 @@ public final class RenderUtils extends MinecraftInstance {
             GL11.glVertex3d(xCoord1, centerY1 + 0.07, zCoord1);
             GL11.glVertex3d(xCoord2, centerY1, zCoord2);
             GL11.glVertex3d(xCoord2, centerY1 + 0.07, zCoord2);
+            i += 10;
         }
         GL11.glEnd();
-
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
