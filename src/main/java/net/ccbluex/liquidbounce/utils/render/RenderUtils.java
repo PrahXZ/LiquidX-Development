@@ -41,6 +41,7 @@ import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.GLUtessellator;
 import org.lwjgl.util.glu.GLUtessellatorCallbackAdapter;
 
+import javax.vecmath.Vector3d;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
@@ -1307,6 +1308,61 @@ public final class RenderUtils extends MinecraftInstance {
         glDepthMask(true);
         glDisable(GL_BLEND);
     }
+
+
+
+    public static void drawCircle1(final Entity entity, final Color color) {
+        final RenderManager renderManager = mc.getRenderManager();
+        final Timer timer = mc.timer;
+
+        final double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * timer.renderPartialTicks
+                - renderManager.renderPosX;
+        final double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * timer.renderPartialTicks
+                - renderManager.renderPosY;
+        final double z = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * timer.renderPartialTicks
+                - renderManager.renderPosZ;
+
+        final double radius = 0.65;
+        final double centerY1 = entity.height + - 0.7 + Math.sin(System.currentTimeMillis() * 0.005) * 0.70;
+
+
+        GL11.glPushMatrix();
+        GL11.glTranslated(x, y, z);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glDisable(GL11.GL_CULL_FACE);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glLineWidth(2.0f);
+        GL11.glColor4f(color.getGreen() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 0.4f);
+
+        GL11.glBegin(GL11.GL_LINES);
+
+        GL11.glEnd();
+        GL11.glBegin(GL11.GL_TRIANGLES);
+        for (int i = 0; i < 360; i += 10) {
+            double radians1 = Math.toRadians(i);
+            double radians2 = Math.toRadians(i + 10);
+            double xCoord1 = radius * Math.cos(radians1);
+            double zCoord1 = radius * Math.sin(radians1);
+            double xCoord2 = radius * Math.cos(radians2);
+            double zCoord2 = radius * Math.sin(radians2);
+            GL11.glVertex3d(xCoord1, centerY1, zCoord1);
+            GL11.glVertex3d(xCoord2, centerY1, zCoord2);
+            GL11.glVertex3d(xCoord1, centerY1 + 0.07, zCoord1);
+
+            GL11.glVertex3d(xCoord1, centerY1 + 0.07, zCoord1);
+            GL11.glVertex3d(xCoord2, centerY1, zCoord2);
+            GL11.glVertex3d(xCoord2, centerY1 + 0.07, zCoord2);
+        }
+        GL11.glEnd();
+
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glPopMatrix();
+    }
+
 
     public static void drawPlatform(final double y, final Color color, final double size) {
         final RenderManager renderManager = mc.getRenderManager();

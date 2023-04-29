@@ -58,12 +58,12 @@ class DiscordRPCModule : Module() {
 
 
     override fun onDisable() {
-                LiquidXRPC.stop()
-                Rise6RPC.stop()
-                IntentRPC.stop()
-                SigmaRPC.stop()
-                LunarRPC.stop()
-                CustomRPC.stop()
+        LiquidXRPC.stop()
+        Rise6RPC.stop()
+        IntentRPC.stop()
+        SigmaRPC.stop()
+        LunarRPC.stop()
+        CustomRPC.stop()
     }
 
 

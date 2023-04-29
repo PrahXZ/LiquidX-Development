@@ -19,6 +19,7 @@ import net.ccbluex.liquidbounce.utils.*
 import net.ccbluex.liquidbounce.utils.extensions.getDistanceToEntityBox
 import net.ccbluex.liquidbounce.utils.math.MathUtils
 import net.ccbluex.liquidbounce.utils.misc.RandomUtils
+import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.utils.timer.TickTimer
 import net.ccbluex.liquidbounce.utils.timer.TimeUtils
@@ -36,6 +37,7 @@ import net.minecraft.util.*
 import net.minecraft.world.WorldSettings
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
+import java.awt.Color
 import java.util.*
 import kotlin.math.cos
 import kotlin.math.max
@@ -292,6 +294,7 @@ class KillAura : Module() {
 
     // Visuals
     private val circleValue = BoolValue("Circle", false)
+    private val Mark = BoolValue("Mark", false)
     private val accuracyValue = IntegerValue("Accuracy", 0, 0, 59).displayable { circleValue.get() }
     private val red = IntegerValue("Red", 255, 0, 255).displayable { circleValue.get() }
     private val green = IntegerValue("Green", 0, 0, 255).displayable { circleValue.get() }
@@ -601,8 +604,18 @@ class KillAura : Module() {
     /**
      * Render event
      */
+
+
     @EventTarget
     fun onRender3D(event: Render3DEvent) {
+
+        if (Mark.get() && hitable && !targetModeValue.get().equals("Multi", ignoreCase = true)) {
+            RenderUtils.drawCircle1(target, if (hitable) Color(255, 255, 144, 70) else Color(255, 0, 0, 70))
+
+        }
+
+
+
         if (circleValue.get()) {
             GL11.glPushMatrix()
             GL11.glTranslated(
