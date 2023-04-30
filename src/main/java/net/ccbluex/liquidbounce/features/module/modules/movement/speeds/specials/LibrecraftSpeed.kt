@@ -10,7 +10,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.elements.NotifyType
 import net.ccbluex.liquidbounce.utils.MovementUtils.strafe
 
 
-class Librecraft : SpeedMode("Librecraft") {
+class LibrecraftSpeed : SpeedMode("Librecraft") {
 
     private val timerBoostValue = BoolValue("Librecraft-TimerBoost", false)
     private val timer1 = FloatValue("Timer-1", 2.2f,1f, 4f).displayable { timerBoostValue.get() }
