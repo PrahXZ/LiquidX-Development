@@ -31,10 +31,6 @@ public final class Translate {
         x = AnimationUtils.lstransition(x, targetX, speed);
         y = AnimationUtils.lstransition(y, targetY, speed);
     }
-    public final void interpolate2(float targetX, float targetY, double smoothing) {
-        this.x = targetX;
-        this.y = AnimationUtil.animate(targetY, this.y, smoothing);
-    }
 
     public float getX() {
         return this.x;

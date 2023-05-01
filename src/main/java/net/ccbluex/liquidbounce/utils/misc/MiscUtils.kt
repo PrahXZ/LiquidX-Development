@@ -13,9 +13,6 @@ import javax.swing.JFrame
 import javax.swing.JOptionPane
 
 object MiscUtils : MinecraftInstance() {
-    fun showErrorPopup(message: String) {
-        JOptionPane.showMessageDialog(null, message, "Alert", JOptionPane.ERROR_MESSAGE)
-    }
 
     fun showErrorPopup(title: String, message: String) {
         JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE)

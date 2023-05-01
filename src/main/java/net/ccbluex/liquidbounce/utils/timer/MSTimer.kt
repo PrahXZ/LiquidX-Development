@@ -12,10 +12,6 @@ class MSTimer {
         return MS + time - System.currentTimeMillis()
     }
 
-    fun timePassed(): Long {
-        return System.currentTimeMillis() - time
-    }
-
     fun reset() {
         time = System.currentTimeMillis()
     }

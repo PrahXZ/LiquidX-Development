@@ -45,11 +45,4 @@ public final class Timer {
         return System.nanoTime() / 1000000L;
     }
 
-    public double getLastDelay () {
-        return getCurrentMS() - getLastMS();
-    }
-
-    public long getLastMS() {
-        return lastMS;
-    }
 }

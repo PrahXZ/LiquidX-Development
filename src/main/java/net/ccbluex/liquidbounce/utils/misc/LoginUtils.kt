@@ -1,12 +1,11 @@
 // LiquidX Development by PrahXZ and Haflin with FDP Base modified. v2.0 R1
-package net.ccbluex.liquidbounce.utils.login
+package net.ccbluex.liquidbounce.utils.misc
 
 import me.liuli.elixir.account.CrackedAccount
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.event.SessionEvent
 import net.ccbluex.liquidbounce.ui.client.altmanager.GuiAltManager
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
-import net.ccbluex.liquidbounce.utils.misc.RandomUtils
 import net.minecraft.util.Session
 
 object LoginUtils : MinecraftInstance() {

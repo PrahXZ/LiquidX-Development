@@ -9,7 +9,7 @@ import net.ccbluex.liquidbounce.ui.client.altmanager.GuiAltManager;
 import net.ccbluex.liquidbounce.utils.ServerUtils;
 import net.ccbluex.liquidbounce.utils.SessionUtils;
 import net.ccbluex.liquidbounce.utils.extensions.RendererExtensionKt;
-import net.ccbluex.liquidbounce.utils.login.LoginUtils;
+import net.ccbluex.liquidbounce.utils.misc.LoginUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiScreen;
