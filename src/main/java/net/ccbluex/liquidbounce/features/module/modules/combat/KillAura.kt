@@ -60,7 +60,7 @@ class KillAura : Module() {
             val i = minCPS.get()
             if (i > newValue) set(i)
 
-            attackDelay = TimeUtils.randomClickDelay(minCPS.get(), this.get())
+            attackDelay = TimeUtils.randomClickDelay(minCPS.get(), this.get()) + MathUtils.randomNumber(0.7, 0.1).toLong()
         }
     }
 
@@ -69,7 +69,7 @@ class KillAura : Module() {
             val i = maxCPS.get()
             if (i < newValue) set(i)
 
-            attackDelay = TimeUtils.randomClickDelay(this.get(), maxCPS.get())
+            attackDelay = TimeUtils.randomClickDelay(this.get(), maxCPS.get()) + MathUtils.randomNumber(0.7, 0.1).toLong()
         }
     }
 

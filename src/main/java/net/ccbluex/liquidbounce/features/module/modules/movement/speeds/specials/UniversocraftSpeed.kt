@@ -43,9 +43,8 @@ class UniversocraftSpeed : SpeedMode("Universocraft") {
             }
             if (mc.thePlayer.onGround) {
                 mc.thePlayer.jump()
-                mc.thePlayer.jumpMovementFactor = 0.04f
                 ticks = 0
-                mc.thePlayer.motionY = 0.42.toFloat().toDouble()
+                mc.thePlayer.motionY = 0.42
                 MovementUtils.strafe(customstrafe.get())
             }
             MovementUtils.strafe()
@@ -57,7 +56,7 @@ class UniversocraftSpeed : SpeedMode("Universocraft") {
             mc.gameSettings.keyBindJump.pressed = false
             if (mc.thePlayer.onGround) {
                 mc.thePlayer.jump()
-                mc.thePlayer.motionY = 0.42.toFloat().toDouble()
+                mc.thePlayer.motionY = 0.42
                 MovementUtils.strafe(customNOstrafe.get())
             }
             MovementUtils.strafe()

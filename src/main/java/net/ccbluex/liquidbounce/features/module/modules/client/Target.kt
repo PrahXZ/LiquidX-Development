@@ -9,8 +9,8 @@ import net.ccbluex.liquidbounce.features.value.BoolValue
 object Target : Module() {
     val playerValue = BoolValue("Player", true)
     val animalValue = BoolValue("Animal", false)
-    val mobValue = BoolValue("Mob", true)
-    val invisibleValue = BoolValue("Invisible", false)
+    val mobValue = BoolValue("Mob", false)
+    val invisibleValue = BoolValue("Invisible", true)
     val deadValue = BoolValue("Dead", false)
 
     // always handle event

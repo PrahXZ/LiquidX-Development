@@ -30,15 +30,9 @@ ClientUtils : MinecraftInstance() {
         logger.error(msg, t)
     }
 
-    fun logDebug(msg: String) {
-        logger.debug(msg)
-    }
 
     fun setTitle() {
         Display.setTitle("${LiquidBounce.CLIENT_NAME} ${LiquidBounce.CLIENT_VERSION} (${LiquidBounce.CLIENT_BRANCH}) | ${LiquidBounce.CLIENT_RELEASE}")
-    }
-    fun setTitle(stats:String) {
-        Display.setTitle("${LiquidBounce.CLIENT_NAME} ${LiquidBounce.CLIENT_VERSION} (${LiquidBounce.CLIENT_BRANCH}) | ${LiquidBounce.CLIENT_RELEASE} - " + stats)
     }
 
     fun displayAlert(message: String) {

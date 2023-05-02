@@ -12,7 +12,5 @@ object Performance : Module() {
     var staticParticleColorValue = BoolValue("StaticParticleColor", false)
     @JvmField
     var fastEntityLightningValue = BoolValue("FastEntityLightning", false)
-    @JvmField
-    var fastBlockLightningValue = BoolValue("FastBlockLightning", false)
 }
 

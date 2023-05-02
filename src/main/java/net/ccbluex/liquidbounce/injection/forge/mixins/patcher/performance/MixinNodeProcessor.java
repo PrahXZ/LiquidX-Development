@@ -1,6 +1,3 @@
-/*
- * ZAVZ Hacked Client
- */
 package net.ccbluex.liquidbounce.injection.forge.mixins.patcher.performance;
 
 import net.minecraft.world.IBlockAccess;
