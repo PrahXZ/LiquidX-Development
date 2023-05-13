@@ -8,7 +8,7 @@ import net.ccbluex.liquidbounce.features.module.modules.combat.OldKillAura;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.No003;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Fly;
 import net.ccbluex.liquidbounce.features.module.modules.movement.InventoryMove;
-import net.ccbluex.liquidbounce.features.module.modules.world.OldScaffold;
+import net.ccbluex.liquidbounce.features.module.modules.world.BlatantScaffold;
 import net.ccbluex.liquidbounce.features.module.modules.movement.NoSlow;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Sprint;
 import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold;
@@ -316,7 +316,7 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
             this.setSprinting(true);
         }
 
-        final OldScaffold scaffold = LiquidBounce.moduleManager.getModule(OldScaffold.class);
+        final BlatantScaffold scaffold = LiquidBounce.moduleManager.getModule(BlatantScaffold.class);
         if ((scaffold.getState() && !scaffold.getCanSprint()) || (sprint.getState() && sprint.getCheckServerSide().get() && (onGround || !sprint.getCheckServerSideGround().get()) && !sprint.getAllDirectionsValue().get() && RotationUtils.targetRotation != null && RotationUtils.getRotationDifference(new Rotation(mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch)) > 30))
             this.setSprinting(false);
 

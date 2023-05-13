@@ -2,8 +2,11 @@ package net.ccbluex.liquidbounce.features.module.modules.movement.speeds.special
 
 import net.ccbluex.liquidbounce.event.MoveEvent
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.SpeedMode
-import net.ccbluex.liquidbounce.features.value.*
+import net.ccbluex.liquidbounce.features.value.BoolValue
+import net.ccbluex.liquidbounce.features.value.FloatValue
+import net.ccbluex.liquidbounce.features.value.IntegerValue
 import net.ccbluex.liquidbounce.utils.MovementUtils
+import net.ccbluex.liquidbounce.utils.MovementUtils.isMoving
 import net.minecraft.potion.Potion
 
 class UniversocraftSpeed : SpeedMode("Universocraft") {
@@ -31,7 +34,7 @@ class UniversocraftSpeed : SpeedMode("Universocraft") {
     }
 
     override fun onUpdate() {
-        if (mc.thePlayer.isPotionActive(Potion.moveSpeed)) {
+        if (mc.thePlayer.isPotionActive(Potion.moveSpeed) && isMoving()) {
             ++ticks
             mc.thePlayer.speedInAir = if (customSpeed.get()) { customSpeedValue.get() / 100 } else { 0.028f }
             mc.gameSettings.keyBindJump.pressed = false
@@ -44,7 +47,7 @@ class UniversocraftSpeed : SpeedMode("Universocraft") {
             if (mc.thePlayer.onGround) {
                 mc.thePlayer.jump()
                 ticks = 0
-                mc.thePlayer.motionY = 0.42
+                mc.thePlayer.motionY = 0.41999998688697815
                 MovementUtils.strafe(customstrafe.get())
             }
             MovementUtils.strafe()
@@ -56,13 +59,12 @@ class UniversocraftSpeed : SpeedMode("Universocraft") {
             mc.gameSettings.keyBindJump.pressed = false
             if (mc.thePlayer.onGround) {
                 mc.thePlayer.jump()
-                mc.thePlayer.motionY = 0.42
+                mc.thePlayer.motionY = 0.41999998688697815
                 MovementUtils.strafe(customNOstrafe.get())
             }
             MovementUtils.strafe()
         }
     }
-
     override fun onDisable() {
         mc.thePlayer.speedInAir = 0.02f
     }

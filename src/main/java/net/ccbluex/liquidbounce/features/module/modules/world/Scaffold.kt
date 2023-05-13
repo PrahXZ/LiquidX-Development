@@ -144,7 +144,7 @@ class Scaffold : Module() {
     // Global settings
     private val towerEnabled = BoolValue("EnableTower", true)
     private val towerCenterValue = BoolValue("Tower-Center", false).displayable { towerEnabled.get() }
-    private val towerModeValue = ListValue("TowerMode", arrayOf("Jump", "Motion", "StableMotion", "ConstantMotion", "MotionTP", "Packet", "Teleport", "AAC3.3.9", "AAC3.6.4", "Verus"), "ConstantMotion").displayable { towerEnabled.get() }
+    private val towerModeValue = ListValue("TowerMode", arrayOf("Jump", "Universocraft", "NCP", "Motion", "StableMotion", "ConstantMotion", "MotionTP", "Packet", "Teleport", "AAC3.3.9", "AAC3.6.4", "Verus"), "ConstantMotion").displayable { towerEnabled.get() }
     private val towerPlaceModeValue = ListValue("Tower-PlaceTiming", arrayOf("Pre", "Post", "Legit"), "Legit")
     private val towerTimerValue = FloatValue("TowerTimer", 1f, 0.1f, 10f).displayable { towerEnabled.get() }
 
@@ -214,6 +214,7 @@ class Scaffold : Module() {
     private var jumpGround = 0.0
     private var verusState = 0
     private var verusJumped = false
+    private var offGroundTicks: Int = 0
     val isTowerOnly: Boolean
         get() = towerEnabled.get()
 
@@ -250,6 +251,38 @@ class Scaffold : Module() {
                 fakeJump()
                 mc.thePlayer.motionY = jumpMotionValue.get().toDouble()
                 timer.reset()
+            }
+            "universocraft" -> {
+                if (mc.thePlayer.posY % 1 <= 0.00153598) {
+                    mc.thePlayer.setPosition(
+                            mc.thePlayer.posX,
+                            Math.floor(mc.thePlayer.posY),
+                            mc.thePlayer.posZ
+                    )
+                    mc.thePlayer.motionY = 0.40
+                } else if (mc.thePlayer.posY % 1 < 0.1 && offGroundTicks != 0) {
+                    mc.thePlayer.setPosition(
+                            mc.thePlayer.posX,
+                            Math.floor(mc.thePlayer.posY),
+                            mc.thePlayer.posZ
+                    )
+                }
+            }
+            "ncp" -> {
+                if (mc.thePlayer.posY % 1 <= 0.00153598) {
+                    mc.thePlayer.setPosition(
+                            mc.thePlayer.posX,
+                            Math.floor(mc.thePlayer.posY),
+                            mc.thePlayer.posZ
+                    )
+                    mc.thePlayer.motionY = 0.41998
+                } else if (mc.thePlayer.posY % 1 < 0.1 && offGroundTicks != 0) {
+                    mc.thePlayer.setPosition(
+                            mc.thePlayer.posX,
+                            Math.floor(mc.thePlayer.posY),
+                            mc.thePlayer.posZ
+                    )
+                }
             }
 
             "motion" -> if (mc.thePlayer.onGround) {
@@ -402,6 +435,10 @@ class Scaffold : Module() {
                 itemStack = mc.thePlayer.inventoryContainer.getSlot(blockSlot).stack
             }
         }
+
+        if (mc.thePlayer.onGround) {
+            offGroundTicks = 0
+        } else offGroundTicks++
 
         // blacklist check
         if (itemStack != null && itemStack.item != null && itemStack.item is ItemBlock) {

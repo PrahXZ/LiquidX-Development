@@ -9,8 +9,6 @@ import kotlin.math.max
 class NCPStableSpeed : SpeedMode("NCPStable") {
     private val timerValue = FloatValue("${valuePrefix}Timer", 1.088f, 1f, 2f)
     private val jumpMovementFactorValue = FloatValue("${valuePrefix}Speed", 0.029f, 0f, 0.1f)
-    private val notice = TextValue("", "Please set value with command")
-    private val noticeLine2 = TextValue("", "for precise values")
 
     override fun onEnable() {
         mc.timer.timerSpeed = timerValue.get()

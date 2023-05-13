@@ -11,7 +11,7 @@ import net.ccbluex.liquidbounce.features.module.modules.misc.Teams
 import net.ccbluex.liquidbounce.features.module.modules.movement.Fly
 import net.ccbluex.liquidbounce.features.module.modules.player.Blink
 import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam
-import net.ccbluex.liquidbounce.features.module.modules.world.OldScaffold
+import net.ccbluex.liquidbounce.features.module.modules.world.BlatantScaffold
 import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold
 import net.ccbluex.liquidbounce.features.value.*
 import net.ccbluex.liquidbounce.utils.*
@@ -1189,7 +1189,7 @@ class KillAura : Module() {
                 || (blinkCheck.get() && LiquidBounce.moduleManager[Blink::class.java]!!.state)
                 || LiquidBounce.moduleManager[FreeCam::class.java]!!.state
                 || (noScaffValue.get() && LiquidBounce.moduleManager[Scaffold::class.java]!!.state)
-                || (noScaffValue.get() && LiquidBounce.moduleManager.getModule(OldScaffold::class.java)!!.state)
+                || (noScaffValue.get() && LiquidBounce.moduleManager.getModule(BlatantScaffold::class.java)!!.state)
                 || (noFlyValue.get() && LiquidBounce.moduleManager[Fly::class.java]!!.state)
                 || (noEat.get() && mc.thePlayer.isUsingItem && (mc.thePlayer.heldItem?.item is ItemFood || mc.thePlayer.heldItem?.item is ItemBucketMilk))
                 || (noBlocking.get() && mc.thePlayer.isUsingItem && mc.thePlayer.heldItem?.item is ItemBlock)

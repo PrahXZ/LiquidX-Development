@@ -37,8 +37,8 @@ import net.minecraft.util.*
 import java.awt.Color
 import kotlin.math.*
 
-@ModuleInfo(name = "OldScaffold", category = ModuleCategory.WORLD)
-class OldScaffold : Module() {
+@ModuleInfo(name = "BlatantScaffold", category = ModuleCategory.WORLD)
+class BlatantScaffold : Module() {
     // Delay
     private val placeableDelayValue = ListValue("PlaceableDelay", arrayOf("Normal", "Smart", "OFF"), "Normal")
     private val placeDelayTower = BoolValue("PlaceableDelayWhenTowering", true)
@@ -80,9 +80,6 @@ class OldScaffold : Module() {
 
     // Rotations
     private val rotationsValue = ListValue("Rotations", arrayOf("None", "Better", "Vanilla", "AAC", "Universocraft", "Custom", "Advanced"), "Universocraft")
-    private val autoconfig = BoolValue("AutoConfiguration", false).displayable { rotationsValue.equals("Universocraft") }
-    private val timerboost = ListValue("TimerBoost-Mode", arrayOf("None", "Universocraft"), "None")
-    private val disableticksputo = IntegerValue("C03Ticks", 30, 20, 100).displayable { timerboost.equals("Verus") }
     private val alwaysRotateValue = BoolValue("AlwaysRotate", true).displayable { !rotationsValue.equals("None") }
     private val towerrotationsValue = ListValue("TowerRotations", arrayOf("None", "Better", "Vanilla", "AAC", "Test1", "Test2", "Custom"), "AAC")
     private val advancedYawModeValue = ListValue("AdvancedYawRotations", arrayOf("Offset", "Static", "RoundStatic", "Vanilla", "Round", "MoveDirection", "OffsetMove"), "MoveDirection").displayable { rotationsValue.equals("Advanced") }
@@ -131,6 +128,7 @@ class OldScaffold : Module() {
             "TowerMode", arrayOf(
             "Jump",
             "Universocraft",
+            "NCP",
             "Motion",
             "Motion2",
             "ConstantMotion",
@@ -240,21 +238,11 @@ class OldScaffold : Module() {
     private var doSpoof = false
 
     //Universocraft values
-    private var wasTimer = false
     val timer = MSTimer()
-    private var ticks = 0
     private var trans = false
     private var MTicks = 0
+    private var offGroundTicks: Int = 0
 
-
-
-    // Scaffold boost timer
-    private var disableticks = 0
-    private var timerboosttimer = MSTimer()
-    private var disabling = false
-    private var transactionxd = false
-
-    var iacpitchvalue = 80
 
     // Rotations Bypass - No Change This
     var pitchvalue = MathUtils.getRandomFloat(82F, 82F)
@@ -266,21 +254,6 @@ class OldScaffold : Module() {
      */
 
     override fun onEnable() {
-
-        // AutoConfiguration for Scaffold - Soon in Rev02
-
-        if (rotationsValue.equals("Universocraft") && autoconfig.get()) {
-
-        }
-
-
-
-
-        timerboosttimer.reset()
-        disableticks = 40
-        disabling = false
-        transactionxd = false
-        mc.thePlayer.ticksExisted = 15
 
         slot = mc.thePlayer.inventory.currentItem
         doSpoof = false
@@ -407,6 +380,10 @@ class OldScaffold : Module() {
             }
         }
 
+        if (mc.thePlayer.onGround) {
+            offGroundTicks = 0
+        } else offGroundTicks++
+
         shouldGoDown = downValue.get() && GameSettings.isKeyDown(mc.gameSettings.keyBindSneak) && blocksAmount > 1
         if (shouldGoDown) mc.gameSettings.keyBindSneak.pressed = false
         if (mc.thePlayer.onGround) {
@@ -483,21 +460,6 @@ class OldScaffold : Module() {
                 zitterDirection = !zitterDirection
             }
         }
-        when (timerboost.get()) {
-            "None" -> {
-
-            }
-            "universocraft" -> {
-                if (mc.thePlayer.ticksExisted % 45 < 10) {
-                    transactionxd = true
-                }
-                if (mc.thePlayer.ticksExisted % 65 < 10) {
-                    transactionxd = false
-                    mc.timer.timerSpeed = 1.0f
-                    mc.thePlayer.ticksExisted = 15
-                }
-            }
-        }
     }
 
     @EventTarget
@@ -524,23 +486,6 @@ class OldScaffold : Module() {
             }
 
 
-        }
-
-        //C03 Halflin packet position
-        when (timerboost.get().lowercase()) {
-            "None" -> {
-
-            }
-            "universocraft" ->
-                if (packet is C03PacketPlayer) {
-                    if (disableticks < disableticksputo.get()) {
-                        disableticks++
-                    } else if (disableticks == disableticksputo.get()) {
-                        disabling = true
-                        disableticks++
-                        timerboosttimer.reset()
-                    }
-                }
         }
 
 
@@ -648,15 +593,35 @@ class OldScaffold : Module() {
                 }
             }
             "universocraft" -> {
-                if (mc.thePlayer.onGround) {
-                    fakeJump()
-                    mc.thePlayer.motionY = 0.42
-                    mc.timer.timerSpeed = 0.5f
-                } else if (mc.thePlayer.motionY < 0.19) {
-                    mc.thePlayer.setPosition(mc.thePlayer.posX, truncate(mc.thePlayer.posY), mc.thePlayer.posZ)
-                    mc.thePlayer.onGround = true
-                    mc.thePlayer.motionY = 0.42
-                    mc.timer.timerSpeed = 0.5f
+                if (mc.thePlayer.posY % 1 <= 0.00153598) {
+                    mc.thePlayer.setPosition(
+                            mc.thePlayer.posX,
+                            Math.floor(mc.thePlayer.posY),
+                            mc.thePlayer.posZ
+                    )
+                    mc.thePlayer.motionY = 0.40
+                } else if (mc.thePlayer.posY % 1 < 0.1 && offGroundTicks != 0) {
+                    mc.thePlayer.setPosition(
+                            mc.thePlayer.posX,
+                            Math.floor(mc.thePlayer.posY),
+                            mc.thePlayer.posZ
+                    )
+                }
+            }
+            "ncp" -> {
+                if (mc.thePlayer.posY % 1 <= 0.00153598) {
+                    mc.thePlayer.setPosition(
+                            mc.thePlayer.posX,
+                            Math.floor(mc.thePlayer.posY),
+                            mc.thePlayer.posZ
+                    )
+                    mc.thePlayer.motionY = 0.40
+                } else if (mc.thePlayer.posY % 1 < 0.1 && offGroundTicks != 0) {
+                    mc.thePlayer.setPosition(
+                            mc.thePlayer.posX,
+                            Math.floor(mc.thePlayer.posY),
+                            mc.thePlayer.posZ
+                    )
                 }
             }
             "jump" -> {
@@ -952,18 +917,6 @@ class OldScaffold : Module() {
      * Disable scaffold module
      */
     override fun onDisable() {
-
-
-        //Timer boost Fix lagback
-        when (timerboost.get().lowercase()) {
-            "None" -> {
-                disabling = false
-            }
-            "universocraft" -> {
-                mc.timer.timerSpeed = 1f
-            }
-        }
-
         LiquidBounce.moduleManager[ABlink::class.java]!!.state = false
         if (mc.thePlayer == null) return
         if (!GameSettings.isKeyDown(mc.gameSettings.keyBindSneak)) {
@@ -983,9 +936,6 @@ class OldScaffold : Module() {
             mc.thePlayer.motionX = 0.0
             mc.thePlayer.motionZ = 0.0
         }
-
-        // Fix Lagbacks
-        mc.netHandler.addToSendQueue(C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SNEAKING))
     }
 
     /**
@@ -1010,7 +960,7 @@ class OldScaffold : Module() {
     fun onRender2D(event: Render2DEvent) {
         if (counterDisplayValue.get()) {
             GlStateManager.pushMatrix()
-            val info = LanguageManager.getAndFormat("ui.scaffold.blocks", blocksAmount)
+            val info = LanguageManager.getAndFormat("Blocks", blocksAmount)
             val slot = InventoryUtils.findAutoBlockBlock()
             val height = event.scaledResolution.scaledHeight
             val width = event.scaledResolution.scaledWidth

@@ -11,6 +11,7 @@ public final class TimeUtils {
     }
 
     public static long randomClickDelay(final int minCPS, final int maxCPS) {
-        return (long) ((Math.random() * (1000 / minCPS - 1000 / maxCPS) * 1.03 + MathUtils.randomNumber(3, 1)) + 1050 / maxCPS);
+        return (long) ((Math.random() * (1000 / minCPS - 1000 / maxCPS + 1)) + 1000 / maxCPS);
+//        return (long) ((Math.random() * (1000 / minCPS - 1000 / maxCPS) * 1.03 + MathUtils.randomNumber(3, 1)) + 1050 / maxCPS);
     }
 }
