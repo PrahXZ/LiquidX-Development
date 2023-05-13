@@ -29,9 +29,6 @@ class SpecialConfig(file: File) : FileConfig(file) {
         GuiBackground.particles = false
         GuiAltManager.randomAltField.text = "%n%s%n%s%n%s%n%s%n%s"
         useGlyphFontRenderer = true
-        ProxyManager.isEnable = false
-        ProxyManager.proxy = "127.0.0.1:10808"
-        ProxyManager.proxyType = Proxy.Type.SOCKS
 
         if (json.has("prefix")) {
             LiquidBounce.commandManager.prefix = json.get("prefix").asCharacter
@@ -71,19 +68,7 @@ class SpecialConfig(file: File) : FileConfig(file) {
                 ServerSpoof.address = jsonValue.get("address").asString
             }
         }
-        if (json.has("proxy")) {
-            val jsonValue = json.getAsJsonObject("proxy")
 
-            if (jsonValue.has("enable")) {
-                ProxyManager.isEnable = jsonValue.get("enable").asBoolean
-            }
-            if (jsonValue.has("address")) {
-                ProxyManager.proxy = jsonValue.get("address").asString
-            }
-            if (jsonValue.has("type")) {
-                ProxyManager.proxyType = Proxy.Type.valueOf(jsonValue.get("type").asString.uppercase())
-            }
-        }
         if (json.has("background")) {
             val jsonValue = json.getAsJsonObject("background")
 
@@ -126,12 +111,6 @@ class SpecialConfig(file: File) : FileConfig(file) {
         serverSpoofJson.addProperty("enable", ServerSpoof.enable)
         serverSpoofJson.addProperty("address", ServerSpoof.address)
         json.add("serverspoof", serverSpoofJson)
-
-        val proxyJson = JsonObject()
-        proxyJson.addProperty("enable", ProxyManager.isEnable)
-        proxyJson.addProperty("address", ProxyManager.proxy)
-        proxyJson.addProperty("type", ProxyManager.proxyType.name)
-        json.add("proxy", proxyJson)
 
         val backgroundJson = JsonObject()
         backgroundJson.addProperty("enable", GuiBackground.enabled)

@@ -1,13 +1,10 @@
 // LiquidX Development by PrahXZ and Haflin with FDP Base modified. v2.0 R1
 package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
-import net.ccbluex.liquidbounce.ui.client.GuiProxySelect;
-import net.ccbluex.liquidbounce.ui.client.GuiServerSpoof;
 import net.ccbluex.liquidbounce.ui.elements.ToolDropdown;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMultiplayer;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ChatComponentText;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,23 +18,12 @@ public abstract class MixinGuiMultiplayer extends MixinGuiScreen {
     @Inject(method = "initGui", at = @At("RETURN"))
     private void initGui(CallbackInfo callbackInfo) {
         buttonList.add(toolButton = new GuiButton(997, 5, 8, 138, 20, "Tools"));
-        buttonList.add(new GuiButton(998, width - 104, 8, 98, 20, "%ui.serverSpoof%"));
-        buttonList.add(new GuiButton(999, width - 208, 8, 98, 20, "Proxy"));
     }
 
     @Inject(method = "actionPerformed", at = @At("HEAD"))
     private void actionPerformed(GuiButton button, CallbackInfo callbackInfo) {
         if (button.id == 997)
             ToolDropdown.toggleState();
-
-        switch(button.id) {
-            case 998:
-                mc.displayGuiScreen(new GuiServerSpoof((GuiScreen) (Object) this));
-                break;
-            case 999:
-                mc.displayGuiScreen(new GuiProxySelect((GuiScreen) (Object) this));
-                break;
-        }
     }
 
     @Inject(method = "drawScreen", at = @At("TAIL"))
