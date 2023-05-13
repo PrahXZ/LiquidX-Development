@@ -12,6 +12,7 @@ import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.features.value.*
 import net.ccbluex.liquidbounce.features.value.FontValue
+import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.scoreboard.ScoreObjective
@@ -42,6 +43,8 @@ class ScoreboardElement(
     private val backgroundColorAlphaValue = IntegerValue("Background-Alpha", 90, 0, 255)
 
     private val shadowValue = BoolValue("ShadowText", false)
+    private val roundValue = BoolValue("Rounded", false)
+    private val topShadowValue = BoolValue("TopShadow", true)
     private val serverValue = ListValue("ServerIp", arrayOf("None", "ClientName", "Website"), "Website")
     private val fontValue = FontValue("Font", Fonts.minecraftFont)
 
@@ -92,7 +95,11 @@ class ScoreboardElement(
         val l1 = -maxWidth
 
         // draw main rect?
-        Gui.drawRect(l1 - 4, -4, 9, maxHeight + fontRenderer.FONT_HEIGHT+1, backColor)
+        if(roundValue.get()) {
+            RenderUtils.drawRoundedRect((l1 - 4).toFloat(), -4f, 9f, (maxHeight + fontRenderer.FONT_HEIGHT+1).toFloat(), 8f, backColor)
+        } else {
+            Gui.drawRect(l1 - 4, -4, 9, maxHeight + fontRenderer.FONT_HEIGHT+1, backColor)
+        }
 
         scoreCollection.forEachIndexed { index, score ->
             val team = scoreboard.getPlayersTeam(score.playerName)
@@ -121,7 +128,7 @@ class ScoreboardElement(
             if (index == scoreCollection.size - 1) {
                 val displayName = objective.displayName
 
-                Gui.drawRect(l1 - 4, -4, 9, fontRenderer.FONT_HEIGHT-2, backColor)
+                if(topShadowValue.get() && !roundValue.get()) Gui.drawRect(l1 - 4, -4, 9, fontRenderer.FONT_HEIGHT-2, backColor)
 
                 GlStateManager.resetColor()
 
@@ -130,7 +137,7 @@ class ScoreboardElement(
             }
         }
 
-        return Border(-maxWidth.toFloat()-3, -5F, 9F, maxHeight.toFloat() + fontRenderer.FONT_HEIGHT + 2)
+        return Border((l1 - 4).toFloat(), -4f, 9F, (maxHeight + fontRenderer.FONT_HEIGHT+1).toFloat())
     }
 
     private fun backgroundColor() = Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(),
