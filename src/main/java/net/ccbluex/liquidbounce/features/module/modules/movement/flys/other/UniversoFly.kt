@@ -16,7 +16,7 @@ import java.sql.Wrapper
 
 class UniversoFly : FlyMode("Universocraft") {
 
-    var movespeed = 0.0f
+    var movespeed = 1.6f
     var damaged = false
 
     var stage = 0
@@ -46,8 +46,6 @@ class UniversoFly : FlyMode("Universocraft") {
     }
 
     override fun onUpdate(event: UpdateEvent) {
-        ClientUtils.displayChatMessage(stage.toString())
-        ClientUtils.displayChatMessage(hops.toString())
         when (stage) {
             -1 -> {
                 stage = 0
@@ -64,21 +62,26 @@ class UniversoFly : FlyMode("Universocraft") {
                 }
             }
             1 -> {
-                if(mc.thePlayer.hurtTime > 0) {
+                if(mc.thePlayer.hurtTime > 0 && damaged) {
                     ticks = 0
-                    movespeed = 0.525f;
                     stage++
                     mc.thePlayer.motionY = 0.42f.toDouble()
                 }
             }
             2 -> {
+
+                var baseSpeed = mc.thePlayer.capabilities.getWalkSpeed() * 2.873
+                if (movespeed > baseSpeed) {
+                    movespeed -= (movespeed / 159.0).toFloat()
+                    movespeed = Math.max(baseSpeed, movespeed.toDouble()).toFloat()
+                }
+
                 if (ticks == 0) {
-                    movespeed *= 3f
+                    movespeed *= 2f
                 } else {
                     if(mc.thePlayer.motionY < 0) mc.thePlayer.motionY = -0.033
                 }
 
-                movespeed -= movespeed / 159
                 ticks++
             }
         }
