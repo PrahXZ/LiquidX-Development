@@ -60,8 +60,8 @@ class BlatantScaffold : Module() {
     private val switchOnEnableValue = BoolValue("SwitchOnEnable", false).displayable { autoBlockValue.equals("Switch") }
 
     // Basic stuff
-    public val sprintValue = ListValue("Sprint", arrayOf("Always", "Dynamic", "OnGround", "OffGround", "Verus", "OFF"), "Always")
-    private val sprintFix = BoolValue("OmniSprintFix", false).displayable { sprintValue.equals("Verus") }
+    public val sprintValue = ListValue("Sprint", arrayOf("Always", "Dynamic", "OnGround", "OffGround", "OFF"), "Always")
+    private val sprintFix = BoolValue("VerusOmniSprintFix", false)
     private  val verusdisabler = BoolValue("VerusDisablerExploit", false)
     private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
     private val searchValue = BoolValue("Search", true)
@@ -268,6 +268,9 @@ class BlatantScaffold : Module() {
             mc.thePlayer.motionX = 0.0
             mc.thePlayer.motionZ = 0.0
         }
+        if (sprintFix.get() && mc.thePlayer.isSprinting) {
+            PacketUtils.sendPacketNoEvent(C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING))
+        }
         if(switchOnEnableValue.get()) {
             if (autoBlockValue.equals("Switch")) {
                 var blockSlot = -1
@@ -373,12 +376,6 @@ class BlatantScaffold : Module() {
         }
 
         mc.thePlayer.isSprinting = canSprint
-        if (sprintValue.equals("Verus")) {
-            if (mc.thePlayer.onGround) {
-                mc.thePlayer.motionX *= 1.19
-                mc.thePlayer.motionZ *= 1.19
-            }
-        }
 
         if (mc.thePlayer.onGround) {
             offGroundTicks = 0

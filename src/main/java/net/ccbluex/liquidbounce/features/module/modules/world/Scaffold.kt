@@ -52,6 +52,12 @@ class Scaffold : Module() {
     // Mode
     public val modeValue = ListValue("Mode", arrayOf("Normal", "Rewinside", "Expand"), "Normal")
 
+    // Expand
+    private val omniDirectionalExpand =
+            BoolValue("OmniDirectionalExpand", true).displayable { modeValue.equals("Expand") }
+    private val expandLengthValue =
+            IntegerValue("ExpandLength", 3, 1, 6).displayable { modeValue.equals("Expand") }
+
     // Delay
     private val placeableDelay = BoolValue("PlaceableDelay", false)
     private val maxDelayValue: IntegerValue = object : IntegerValue("MaxDelay", 50, 0, 1000) {
@@ -69,7 +75,7 @@ class Scaffold : Module() {
 
     // ListValues
     @JvmField
-    public val sprintValue = ListValue("Sprint", arrayOf("Always", "Dynamic", "OnGround", "OffGround", "Verus", "OFF"), "Always")
+    public val sprintValue = ListValue("Sprint", arrayOf("Always", "Dynamic", "OnGround", "OffGround", "OFF"), "Always")
     private val placeModeValue = ListValue("PlaceTiming", arrayOf("Pre", "Post", "Legit"), "Legit")
     val counterDisplayValue = ListValue("Counter", arrayOf("Off", "Simple", "Dark", "Exhibition", "Advanced", "Sigma", "Novoline"), "Simple")
     private val autoBlockMode = ListValue("AutoBlock", arrayOf("LiteSpoof", "Spoof", "Switch", "Off"), "LiteSpoof")
@@ -113,7 +119,7 @@ class Scaffold : Module() {
     val xzMultiplier = FloatValue("XZ-Multiplier", 1f, 0f, 4f)
     private val customSpeedValue = BoolValue("CustomSpeed", false)
     private val customMoveSpeedValue = FloatValue("CustomMoveSpeed", 0.2f, 0f, 5f).displayable { customSpeedValue.get() }
-    private val omniBypass = BoolValue("OmniSprintBypass", true)
+    private val omniBypass = BoolValue("VerusOmniSprintFix", false)
     private  val verusdisabler = BoolValue("VerusDisablerExploit", false)
     private val swingValue = BoolValue("Swing", false)
     private val downValue = BoolValue("Down", true)
@@ -125,11 +131,6 @@ class Scaffold : Module() {
     private val blueValue = IntegerValue("Blue", 255, 0, 255).displayable { markValue.get() }
     private val alphaValue = IntegerValue("Alpha", 120, 0, 255).displayable { markValue.get() }
 
-    // Expand
-    private val omniDirectionalExpand =
-            BoolValue("OmniDirectionalExpand", true).displayable { modeValue.equals("Expand") }
-    private val expandLengthValue =
-            IntegerValue("ExpandLength", 3, 1, 6).displayable { modeValue.equals("Expand") }
 
     // Zitter
     private val zitterValue = BoolValue("Zitter", false).displayable { !isTowerOnly }
@@ -226,6 +227,10 @@ class Scaffold : Module() {
      * Enable module
      */
     override fun onEnable() {
+        if (omniBypass.get() && mc.thePlayer.isSprinting) {
+            PacketUtils.sendPacketNoEvent(C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING))
+        }
+
         if (mc.thePlayer == null) return
         progress = 0f
         spinYaw = 0f
@@ -469,12 +474,6 @@ class Scaffold : Module() {
             }
 
             mc.thePlayer.isSprinting = canSprint
-            if (sprintValue.equals("Verus")) {
-                if (mc.thePlayer.onGround) {
-                    mc.thePlayer.motionX *= 1.19
-                    mc.thePlayer.motionZ *= 1.19
-                }
-            }
 
             // Smooth Zitter
             if (zitterValue.get() && zitterModeValue.get().equals("smooth", ignoreCase = true)) {
