@@ -115,7 +115,6 @@ object LiquidBounce {
         eventManager.registerListener(AntiForge)
         eventManager.registerListener(InventoryUtils)
         eventManager.registerListener(BungeeCordSpoof())
-        eventManager.registerListener(ServerSpoof)
         eventManager.registerListener(SessionUtils())
         eventManager.registerListener(StatisticsUtils())
         eventManager.registerListener(LocationCache())

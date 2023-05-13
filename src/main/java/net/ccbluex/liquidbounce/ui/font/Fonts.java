@@ -152,11 +152,7 @@ public class Fonts {
         fontTenacity40 = new GameFontRenderer(getFontcustom(40,"tenacity"));
         fontTenacityBold40 = new GameFontRenderer(getFontcustom(40,"tenacity-bold"));
 
-
-
-
-        for(GameFontRenderer it : getCustomFonts()) {
-        }
+        getCustomFonts();
 
         initFonts();
 
