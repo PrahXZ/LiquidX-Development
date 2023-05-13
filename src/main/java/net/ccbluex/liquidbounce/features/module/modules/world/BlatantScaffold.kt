@@ -268,6 +268,9 @@ class BlatantScaffold : Module() {
             mc.thePlayer.motionX = 0.0
             mc.thePlayer.motionZ = 0.0
         }
+        if(sprintFix.get() && mc.thePlayer.isSprinting) {
+            PacketUtils.sendPacketNoEvent(C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING))
+        }
         if(switchOnEnableValue.get()) {
             if (autoBlockValue.equals("Switch")) {
                 var blockSlot = -1
