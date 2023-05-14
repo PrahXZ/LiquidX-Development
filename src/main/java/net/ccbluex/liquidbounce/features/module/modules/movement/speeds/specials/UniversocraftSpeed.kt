@@ -14,6 +14,8 @@ class UniversocraftSpeed : SpeedMode("Universocraft") {
 
     // Custom
     private val customSpeed = BoolValue("UniversoCraft-CustomSpeed", false)
+    private val custommovementfactorPOT = FloatValue("UniversoCraft-JumpMovementFactorWithPotion", 0.02f, 0.01f, 0.04f).displayable { customSpeed.get() }
+    private val custommovementfactorNOPOT = FloatValue("UniversoCraft-JumpMovementFactorWithoutPotion", 0.02f, 0.01f, 0.04f).displayable { customSpeed.get() }
     private val customstrafe = FloatValue("UniversoCraft-FrictionWithPotion", 0.48f, 0.1f, 2f).displayable { customSpeed.get() }
     private val customNOstrafe = FloatValue("UniversoCraft-FrictionWithoutPotion", 0.48f, 0.1f, 2f).displayable { customSpeed.get() }
     private val customSpeedValue = FloatValue("UniversoCraft-SpeedWithPotion", 2.8f, 1f, 4f).displayable { customSpeed.get() }
@@ -36,6 +38,7 @@ class UniversocraftSpeed : SpeedMode("Universocraft") {
     override fun onUpdate() {
         if (mc.thePlayer.isPotionActive(Potion.moveSpeed) && isMoving()) {
             ++ticks
+            mc.thePlayer.jumpMovementFactor = custommovementfactorPOT.get()
             mc.thePlayer.speedInAir = if (customSpeed.get()) { customSpeedValue.get() / 100 } else { 0.028f }
             mc.gameSettings.keyBindJump.pressed = false
             if (boost.get() && mc.thePlayer.hurtTime == 9) {
@@ -52,6 +55,7 @@ class UniversocraftSpeed : SpeedMode("Universocraft") {
             }
             MovementUtils.strafe()
         } else {
+            mc.thePlayer.jumpMovementFactor = custommovementfactorNOPOT.get()
             if (boost.get() && mc.thePlayer.hurtTime == 9) {
                 MovementUtils.strafe(boostvalue.get());
             }
