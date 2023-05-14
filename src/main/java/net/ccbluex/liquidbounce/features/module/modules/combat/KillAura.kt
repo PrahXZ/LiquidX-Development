@@ -42,6 +42,8 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sin
 import net.ccbluex.liquidbounce.utils.timer.TimeUtils
+import java.util.Timer
+import kotlin.concurrent.schedule
 
 @ModuleInfo(
         name = "KillAura",
@@ -150,75 +152,8 @@ class KillAura : Module() {
     private val attackModeValue = ListValue("Attack-Timing", arrayOf("Normal", "Pre", "Post"), "Normal")
 
     // AutoBlock
-    val autoBlockModeValue =
-            ListValue("AutoBlock", arrayOf("Interact", "Packet", "AfterTick", "NCP", "WatchdogDmg", "Fake", "None"), "Fake")
-
-    private val interactAutoBlockValue = BoolValue(
-            "InteractAutoBlock",
-            false
-    ).displayable { !autoBlockModeValue.get().equals("Fake", true) && !autoBlockModeValue.get().equals("None", true) }
-    private val verusAutoBlockValue = BoolValue(
-            "UnBlock-Exploit",
-            false
-    ).displayable { !autoBlockModeValue.get().equals("Fake", true) && !autoBlockModeValue.get().equals("None", true) }
-    private val abThruWallValue = BoolValue(
-            "ThroughAutoBlock",
-            true
-    ).displayable { !autoBlockModeValue.get().equals("Fake", true) && !autoBlockModeValue.get().equals("None", true) }
-
-    private val smartAutoBlockValue = BoolValue(
-            "SmartAutoBlock",
-            false
-    ).displayable {
-        !autoBlockModeValue.get().equals("Fake", true) && !autoBlockModeValue.get().equals("None", true)
-    }
-    private val smartABItemValue = BoolValue(
-            "SmartAutoBlock-ItemCheck",
-            true
-    ).displayable {
-        !autoBlockModeValue.get()
-                .equals("Fake", true) && smartAutoBlockValue.get() && !autoBlockModeValue.get()
-                .equals("None", true) && smartAutoBlockValue.get()
-    }
-    private val smartABFacingValue = BoolValue(
-            "SmartAutoBlock-FacingCheck",
-            true
-    ).displayable {
-        !autoBlockModeValue.get()
-                .equals("Fake", true) && smartAutoBlockValue.get() && !autoBlockModeValue.get()
-                .equals("None", true) && smartAutoBlockValue.get()
-    }
-    private val smartABRangeValue = FloatValue(
-            "SmartAB-Range",
-            3.5F,
-            3F,
-            8F
-    ).displayable {
-        !autoBlockModeValue.get()
-                .equals("Fake", true) && smartAutoBlockValue.get() && !autoBlockModeValue.get()
-                .equals("None", true) && smartAutoBlockValue.get()
-    }
-    private val smartABTolerationValue = FloatValue(
-            "SmartAB-Toleration",
-            0F,
-            0F,
-            2F
-    ).displayable {
-        !autoBlockModeValue.get()
-                .equals("Fake", true) && smartAutoBlockValue.get() && !autoBlockModeValue.get()
-                .equals("None", true) && smartAutoBlockValue.get()
-    }
-
-    private val afterTickPatchValue = BoolValue(
-            "AfterTickPatch",
-            true
-    ).displayable { autoBlockModeValue.get().equals("AfterTick", true) }
-    private val blockRate = IntegerValue(
-            "BlockRate",
-            100,
-            1,
-            100
-    ).displayable { !autoBlockModeValue.get().equals("Fake", true) && !autoBlockModeValue.get().equals("None", true) }
+    val autoBlockModeValue = ListValue("AutoBlock", arrayOf("Vanilla", "Vulcan", "Universocraft", "Fake", "None"), "Fake")
+    val autoBlockInteractValue = BoolValue("AutoBlock-Interact", false).displayable { !autoBlockModeValue.equals("None") || !autoBlockModeValue.equals("Fake") }
 
     // Bypass
     val silentRotationValue = BoolValue("SilentRotation", true).displayable { !rotations.equals("None") }
@@ -328,18 +263,14 @@ class KillAura : Module() {
     // Container Delay
     private var containerOpen = -1L
 
-    // Fake block status
+    // AutoBlock variables
+    val blockTimer = MSTimer()
     var blockingStatus = false
-    var verusBlocking = false
     var fakeBlock = false
-
-    var smartBlocking = false
 
     // yJitter
     var yJitter = 0.0
     var yJitterStatus = true
-    private val canSmartBlock: Boolean
-        get() = !smartAutoBlockValue.get() || smartBlocking
     val displayBlocking: Boolean
         get() = blockingStatus || (autoBlockModeValue.equals("Fake") && canFakeBlock)
 
@@ -353,8 +284,6 @@ class KillAura : Module() {
         mc.theWorld ?: return
 
         updateTarget()
-        verusBlocking = false
-        smartBlocking = false
 
         yJitter = 0.0
         yJitterStatus = true
@@ -372,17 +301,6 @@ class KillAura : Module() {
         clicks = 0
 
         stopBlocking()
-        if (verusBlocking && !blockingStatus && !mc.thePlayer.isBlocking) {
-            verusBlocking = false
-            if (verusAutoBlockValue.get())
-                PacketUtils.sendPacketNoEvent(
-                        C07PacketPlayerDigging(
-                                C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
-                                BlockPos.ORIGIN,
-                                EnumFacing.DOWN
-                        )
-                )
-        }
     }
 
     /**
@@ -390,12 +308,19 @@ class KillAura : Module() {
      */
     @EventTarget
     fun onMotion(event: MotionEvent) {
-        if (attackModeValue.get().equals("Pre") && event.eventState != EventState.PRE) {
+        if (attackModeValue.get().equals("Pre") && event.eventState == EventState.PRE) {
             updateKA()
         }
 
-        if (attackModeValue.get().equals("Post") && event.eventState != EventState.POST) {
+        if (attackModeValue.get().equals("Post") && event.eventState == EventState.POST) {
             updateKA()
+        }
+
+        if(event.eventState == EventState.PRE) {
+            // AutoBlock
+            if(canBlock && currentTarget != null) {
+                startBlocking(currentTarget!!, autoBlockInteractValue.get())
+            }
         }
 
         if (event.eventState == EventState.POST) {
@@ -404,14 +329,9 @@ class KillAura : Module() {
 
             // Update hitable
             updateHitable()
-
-            // AutoBlock
-            if (autoBlockModeValue.get().equals("AfterTick", true) && canBlock)
-                startBlocking(currentTarget!!, hitable)
         }
 
-        if (rotationStrafeValue.get().equals("Off", true))
-            update()
+        update()
     }
 
 
@@ -420,11 +340,11 @@ class KillAura : Module() {
      */
     @EventTarget
     fun onStrafe(event: StrafeEvent) {
-        update()
+        when (rotationStrafeValue.get().lowercase(Locale.getDefault())) {
+            "strict" -> {
+                update()
 
-        if (currentTarget != null && RotationUtils.targetRotation != null) {
-            when (rotationStrafeValue.get().lowercase(Locale.getDefault())) {
-                "strict" -> {
+                if (currentTarget != null && RotationUtils.targetRotation != null) {
                     val (yaw) = RotationUtils.targetRotation ?: return
                     var strafe = event.strafe
                     var forward = event.forward
@@ -450,10 +370,12 @@ class KillAura : Module() {
                     }
                     event.cancelEvent()
                 }
+            }
 
-                "silent" -> {
-                    update()
+            "silent" -> {
+                update()
 
+                if (currentTarget != null && RotationUtils.targetRotation != null) {
                     RotationUtils.targetRotation.applyStrafeToPlayer(event)
                     event.cancelEvent()
                 }
@@ -482,27 +404,11 @@ class KillAura : Module() {
             target = currentTarget
     }
 
-    @EventTarget
-    fun onPacket(event: PacketEvent) {
-        val packet = event.packet
-        if (verusBlocking
-                && ((packet is C07PacketPlayerDigging
-                        && packet.status == C07PacketPlayerDigging.Action.RELEASE_USE_ITEM)
-                        || packet is C08PacketPlayerBlockPlacement)
-                && verusAutoBlockValue.get()
-        )
-            event.cancelEvent()
-
-        if (packet is C09PacketHeldItemChange)
-            verusBlocking = false
-    }
-
     /**
      * Update event
      */
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
-
         // Fov random
         fovrandomxd = MathUtils.getRandomFloat(fovmax.get(),fovmin.get()).toInt()
 
@@ -514,55 +420,6 @@ class KillAura : Module() {
 
         if (attackModeValue.equals("Normal")) {
             updateKA()
-        }
-
-        smartBlocking = false
-        if (smartAutoBlockValue.get() && target != null) {
-            val smTarget = target!!
-            if (!smartABItemValue.get() || (smTarget.heldItem != null && smTarget.heldItem.item != null && (smTarget.heldItem.item is ItemSword || smTarget.heldItem.item is ItemAxe))) {
-                if (mc.thePlayer.getDistanceToEntityBox(smTarget) < smartABRangeValue.get()) {
-                    if (smartABFacingValue.get()) {
-                        if (smTarget.rayTrace(
-                                        smartABRangeValue.get().toDouble(),
-                                        1F
-                                ).typeOfHit == MovingObjectPosition.MovingObjectType.MISS
-                        ) {
-                            val eyesVec = smTarget.getPositionEyes(1F)
-                            val lookVec = smTarget.getLook(1F)
-                            val pointingVec = eyesVec.addVector(
-                                    lookVec.xCoord * smartABRangeValue.get(),
-                                    lookVec.yCoord * smartABRangeValue.get(),
-                                    lookVec.zCoord * smartABRangeValue.get()
-                            )
-                            val border = mc.thePlayer.collisionBorderSize + smartABTolerationValue.get()
-                            val bb = mc.thePlayer.entityBoundingBox.expand(
-                                    border.toDouble(),
-                                    border.toDouble(),
-                                    border.toDouble()
-                            )
-                            smartBlocking = bb.calculateIntercept(
-                                    eyesVec,
-                                    pointingVec
-                            ) != null || bb.intersectsWith(smTarget.entityBoundingBox)
-                        }
-                    } else
-                        smartBlocking = true
-                }
-            }
-        }
-
-        if (mc.thePlayer.isBlocking || blockingStatus || target != null)
-            verusBlocking = true
-        else if (verusBlocking) {
-            verusBlocking = false
-            if (verusAutoBlockValue.get())
-                PacketUtils.sendPacketNoEvent(
-                        C07PacketPlayerDigging(
-                                C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
-                                BlockPos.ORIGIN,
-                                EnumFacing.DOWN
-                        )
-                )
         }
     }
 
@@ -601,13 +458,9 @@ class KillAura : Module() {
 
     @EventTarget
     fun onRender3D(event: Render3DEvent) {
-
         if (Mark.get() && hitable && !targetModeValue.get().equals("Multi", ignoreCase = true)) {
             RenderUtils.drawMarkCircle(target, if (hitable) Color(255, 255, 144, 70) else Color(255, 0, 0, 70))
-
         }
-
-
 
         if (circleValue.get()) {
             GL11.glPushMatrix()
@@ -864,6 +717,8 @@ class KillAura : Module() {
         endTimer.update()
         endingTimer.update()
 
+        //if((autoBlockModeValue.get().equals("Vulcan") || autoBlockModeValue.get().equals("Universocraft")) && !blockTimer.hasTimePassed(50L)) return
+
         // Call attack event
         LiquidBounce.eventManager.callEvent(AttackEvent(entity))
 
@@ -902,11 +757,6 @@ class KillAura : Module() {
         if (keepSprintValue.get() && mc.playerController.currentGameType != WorldSettings.GameType.SPECTATOR) {
             mc.thePlayer.attackTargetEntityWithCurrentItem(entity)
         }
-
-        // Start blocking after attack
-        if ((!afterTickPatchValue.get() || !autoBlockModeValue.equals("AfterTick")) && (mc.thePlayer.isBlocking || canBlock)
-        )
-            startBlocking(entity, interactAutoBlockValue.get())
     }
 
     /**
@@ -914,7 +764,6 @@ class KillAura : Module() {
      */
     private fun updateRotations(entity: Entity): Boolean {
         if (rotations.equals("None")) return true
-
 
         val defRotation = getTargetRotation(entity) ?: return false
 
@@ -1061,16 +910,8 @@ class KillAura : Module() {
 
 
     private fun startBlocking(interactEntity: Entity, interact: Boolean) {
-        if (!canSmartBlock || !(blockRate.get() > 0 && Random().nextInt(100) <= blockRate.get()) || autoBlockModeValue.equals("Fake"))
+        if (autoBlockModeValue.equals("Fake"))
             return
-
-        if (!abThruWallValue.get() && interactEntity is EntityLivingBase) {
-            val entityLB = interactEntity
-            if (!entityLB.canEntityBeSeen(mc.thePlayer!!)) {
-                fakeBlock = true
-                return
-            }
-        }
 
         if (autoBlockModeValue.get().equals("none", true)) {
             fakeBlock = false
@@ -1082,41 +923,21 @@ class KillAura : Module() {
             return
         }
 
-        if (autoBlockModeValue.get().equals("ncp", true)) {
-            PacketUtils.sendPacketNoEvent(
-                    C08PacketPlayerBlockPlacement(
-                            BlockPos(-1, -1, -1),
-                            255,
-                            null,
-                            0.0f,
-                            0.0f,
-                            0.0f
-                    )
-            )
-            blockingStatus = true
-            return
-        }
-
-        if (autoBlockModeValue.get().equals("interact", true)) {
-            KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.keyCode, true)
-        }
-
-        if (autoBlockModeValue.get().equals("packet", true)) {
+        if (autoBlockModeValue.get().equals("vanilla", true)) {
             mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()))
             blockingStatus = true
         }
 
-        if (autoBlockModeValue.get().equals("watchdogdmg", true)) {
-            if (mc.thePlayer.hurtTime > 10) {
-                KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.keyCode, true)
-            } else {
-                KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.keyCode, false)
-            }
-            return
+        if (autoBlockModeValue.get().equals("vulcan", true) && !blockingStatus) {
+            mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()))
+            blockingStatus = true
+            blockTimer.reset()
         }
 
-
-
+        if (autoBlockModeValue.get().equals("universocraft", true)) {
+            mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()))
+            blockingStatus = true
+        }
 
         if (interact) {
             val positionEye = mc.renderViewEntity?.getPositionEyes(1F)
@@ -1160,18 +981,14 @@ class KillAura : Module() {
         blockingStatus = false
         if (endTimer.hasTimePassed(2)) {
             endTimer.reset()
-            if (autoBlockModeValue.get().equals("interact", true) || autoBlockModeValue.get()
-                            .equals("watchdogdmg", true)) {
-                KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.keyCode, false)
-            } else {
-                PacketUtils.sendPacketNoEvent(
-                        C07PacketPlayerDigging(
-                                C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
-                                BlockPos.ORIGIN,
-                                EnumFacing.DOWN
-                        )
-                )
-            }
+            if(autoBlockModeValue.get().equals("Universocraft")) return
+            PacketUtils.sendPacketNoEvent(
+                    C07PacketPlayerDigging(
+                            C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
+                            BlockPos.ORIGIN,
+                            EnumFacing.DOWN
+                    )
+            )
         }
         if (endingTimer.hasTimePassed(4)) {
             mc.thePlayer.swingItem()
