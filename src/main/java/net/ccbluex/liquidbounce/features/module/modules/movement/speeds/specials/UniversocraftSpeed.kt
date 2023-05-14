@@ -38,7 +38,7 @@ class UniversocraftSpeed : SpeedMode("Universocraft") {
     override fun onUpdate() {
         if (mc.thePlayer.isPotionActive(Potion.moveSpeed) && isMoving()) {
             ++ticks
-            mc.thePlayer.jumpMovementFactor = custommovementfactorPOT.get()
+            mc.thePlayer.jumpMovementFactor = if (customSpeed.get()) { custommovementfactorPOT.get() } else { 0.02f }
             mc.thePlayer.speedInAir = if (customSpeed.get()) { customSpeedValue.get() / 100 } else { 0.028f }
             mc.gameSettings.keyBindJump.pressed = false
             if (boost.get() && mc.thePlayer.hurtTime == 9) {
@@ -51,11 +51,11 @@ class UniversocraftSpeed : SpeedMode("Universocraft") {
                 mc.thePlayer.jump()
                 ticks = 0
                 mc.thePlayer.motionY = 0.41999998688697815
-                MovementUtils.strafe(customstrafe.get())
+                MovementUtils.strafe(if (customSpeed.get()) { customstrafe.get() } else { 0.48f })
             }
             MovementUtils.strafe()
         } else {
-            mc.thePlayer.jumpMovementFactor = custommovementfactorNOPOT.get()
+            mc.thePlayer.jumpMovementFactor = if (customSpeed.get()) { custommovementfactorNOPOT.get() } else { 0.02f }
             if (boost.get() && mc.thePlayer.hurtTime == 9) {
                 MovementUtils.strafe(boostvalue.get());
             }
@@ -64,7 +64,7 @@ class UniversocraftSpeed : SpeedMode("Universocraft") {
             if (mc.thePlayer.onGround) {
                 mc.thePlayer.jump()
                 mc.thePlayer.motionY = 0.41999998688697815
-                MovementUtils.strafe(customNOstrafe.get())
+                MovementUtils.strafe(if (customSpeed.get()) { customNOstrafe.get() } else { 0.48f })
             }
             MovementUtils.strafe()
         }

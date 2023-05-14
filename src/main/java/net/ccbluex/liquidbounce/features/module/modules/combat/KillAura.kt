@@ -717,7 +717,7 @@ class KillAura : Module() {
         endTimer.update()
         endingTimer.update()
 
-        //if((autoBlockModeValue.get().equals("Vulcan") || autoBlockModeValue.get().equals("Universocraft")) && !blockTimer.hasTimePassed(50L)) return
+        if((autoBlockModeValue.get().equals("Vulcan") || autoBlockModeValue.get().equals("Universocraft")) && !blockTimer.hasTimePassed(50L)) return
 
         // Call attack event
         LiquidBounce.eventManager.callEvent(AttackEvent(entity))
