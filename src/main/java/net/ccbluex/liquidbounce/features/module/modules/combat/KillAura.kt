@@ -42,6 +42,8 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sin
 import net.ccbluex.liquidbounce.utils.timer.TimeUtils
+import java.util.Timer
+import kotlin.concurrent.schedule
 
 @ModuleInfo(
         name = "KillAura",
@@ -372,17 +374,6 @@ class KillAura : Module() {
         clicks = 0
 
         stopBlocking()
-        if (verusBlocking && !blockingStatus && !mc.thePlayer.isBlocking) {
-            verusBlocking = false
-            if (autoBlockModeValue.get().equals("Universocraft"))
-                PacketUtils.sendPacketNoEvent(
-                        C07PacketPlayerDigging(
-                                C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
-                                BlockPos.ORIGIN,
-                                EnumFacing.DOWN
-                        )
-                )
-        }
     }
 
     /**
@@ -399,10 +390,9 @@ class KillAura : Module() {
         }
 
         if(event.eventState == EventState.PRE) {
-            if(autoBlockModeValue.get().equals("Universocraft") && !verusBlocking) {
+            if(autoBlockModeValue.get().equals("Universocraft") && canBlock && currentTarget != null) {
                 if(!mc.gameSettings.keyBindUseItem.isKeyDown) {
                     mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.currentEquippedItem))
-                    verusBlocking = true
                     blockingStatus = true
                 }
             }
@@ -490,20 +480,6 @@ class KillAura : Module() {
 
         if (!targetModeValue.equals("Switch") && isEnemy(currentTarget))
             target = currentTarget
-    }
-
-    @EventTarget
-    fun onPacket(event: PacketEvent) {
-        val packet = event.packet
-        if (verusBlocking
-                && ((packet is C07PacketPlayerDigging
-                        && packet.status == C07PacketPlayerDigging.Action.RELEASE_USE_ITEM))
-                && verusAutoBlockValue.get()
-        )
-            event.cancelEvent()
-
-        if (packet is C09PacketHeldItemChange)
-            verusBlocking = false
     }
 
     /**
@@ -898,8 +874,6 @@ class KillAura : Module() {
             mc.thePlayer.attackTargetEntityWithCurrentItem(entity)
         }
 
-        if(autoBlockModeValue.get().equals("Universocraft")) verusBlocking = false
-
         // Start blocking after attack
         if ((!afterTickPatchValue.get() || !autoBlockModeValue.equals("AfterTick")) && (mc.thePlayer.isBlocking || canBlock)
         )
@@ -1161,12 +1135,13 @@ class KillAura : Module() {
                             .equals("watchdogdmg", true)) {
                 KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.keyCode, false)
             } else {
+                if(autoBlockModeValue.get().equals("Universocraft")) return
                 PacketUtils.sendPacketNoEvent(
-                        C07PacketPlayerDigging(
-                                C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
-                                BlockPos.ORIGIN,
-                                EnumFacing.DOWN
-                        )
+                    C07PacketPlayerDigging(
+                        C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
+                        BlockPos.ORIGIN,
+                        EnumFacing.DOWN
+                    )
                 )
             }
         }
