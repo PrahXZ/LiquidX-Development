@@ -151,7 +151,7 @@ class KillAura : Module() {
 
     // AutoBlock
     val autoBlockModeValue =
-            ListValue("AutoBlock", arrayOf("Interact", "Packet", "AfterTick", "NCP", "WatchdogDmg", "Universocraft", "Fake", "None"), "Fake")
+            ListValue("AutoBlock", arrayOf("Interact", "Packet", "AfterTick", "NCP", "WatchdogDmg", "Fake", "None"), "Fake")
 
     private val interactAutoBlockValue = BoolValue(
             "InteractAutoBlock",
@@ -374,7 +374,7 @@ class KillAura : Module() {
         stopBlocking()
         if (verusBlocking && !blockingStatus && !mc.thePlayer.isBlocking) {
             verusBlocking = false
-            if (autoBlockModeValue.get().equals("Universocraft"))
+            if (verusAutoBlockValue.get())
                 PacketUtils.sendPacketNoEvent(
                         C07PacketPlayerDigging(
                                 C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
@@ -396,16 +396,6 @@ class KillAura : Module() {
 
         if (attackModeValue.get().equals("Post") && event.eventState != EventState.POST) {
             updateKA()
-        }
-
-        if(event.eventState == EventState.PRE) {
-            if(autoBlockModeValue.get().equals("Universocraft") && !verusBlocking) {
-                if(!mc.gameSettings.keyBindUseItem.isKeyDown) {
-                    mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.currentEquippedItem))
-                    verusBlocking = true
-                    blockingStatus = true
-                }
-            }
         }
 
         if (event.eventState == EventState.POST) {
@@ -497,7 +487,8 @@ class KillAura : Module() {
         val packet = event.packet
         if (verusBlocking
                 && ((packet is C07PacketPlayerDigging
-                        && packet.status == C07PacketPlayerDigging.Action.RELEASE_USE_ITEM))
+                        && packet.status == C07PacketPlayerDigging.Action.RELEASE_USE_ITEM)
+                        || packet is C08PacketPlayerBlockPlacement)
                 && verusAutoBlockValue.get()
         )
             event.cancelEvent()
@@ -558,6 +549,20 @@ class KillAura : Module() {
                         smartBlocking = true
                 }
             }
+        }
+
+        if (mc.thePlayer.isBlocking || blockingStatus || target != null)
+            verusBlocking = true
+        else if (verusBlocking) {
+            verusBlocking = false
+            if (verusAutoBlockValue.get())
+                PacketUtils.sendPacketNoEvent(
+                        C07PacketPlayerDigging(
+                                C07PacketPlayerDigging.Action.RELEASE_USE_ITEM,
+                                BlockPos.ORIGIN,
+                                EnumFacing.DOWN
+                        )
+                )
         }
     }
 
@@ -897,8 +902,6 @@ class KillAura : Module() {
         if (keepSprintValue.get() && mc.playerController.currentGameType != WorldSettings.GameType.SPECTATOR) {
             mc.thePlayer.attackTargetEntityWithCurrentItem(entity)
         }
-
-        if(autoBlockModeValue.get().equals("Universocraft")) verusBlocking = false
 
         // Start blocking after attack
         if ((!afterTickPatchValue.get() || !autoBlockModeValue.equals("AfterTick")) && (mc.thePlayer.isBlocking || canBlock)
