@@ -936,6 +936,9 @@ class KillAura : Module() {
 
         if (autoBlockModeValue.get().equals("universocraft", true)) {
             mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()))
+            if (mc.thePlayer.isSprinting) {
+                PacketUtils.sendPacketNoEvent(C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING))
+            }
             blockingStatus = true
         }
 
