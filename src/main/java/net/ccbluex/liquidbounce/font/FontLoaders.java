@@ -42,6 +42,7 @@ public abstract class FontLoaders {
     public static CFontRenderer JELLO18 = new CFontRenderer(getJELLO(18), true, true);
     public static CFontRenderer JELLO20 = new CFontRenderer(getJELLO(20), true, true);
     public static CFontRenderer JELLO30 = new CFontRenderer(getJELLO(30), true, true);
+    public static CFontRenderer JELLO40 = new CFontRenderer(getJELLO(45), true, true);
     public static CFontRenderer Logo = new CFontRenderer(getNovo(40), true, true);
     public static ArrayList<CFontRenderer> fonts = new ArrayList<>();
 

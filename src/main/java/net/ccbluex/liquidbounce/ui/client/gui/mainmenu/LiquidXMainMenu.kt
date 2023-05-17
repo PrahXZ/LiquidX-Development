@@ -1,147 +1,34 @@
 package net.ccbluex.liquidbounce.launch.data.modernui.mainmenu
-
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.font.FontLoaders
 import net.ccbluex.liquidbounce.ui.client.GuiBackground
-import net.ccbluex.liquidbounce.ui.client.gui.Utils.TestBtn
 import net.ccbluex.liquidbounce.ui.client.altmanager.GuiAltManager
-import net.ccbluex.liquidbounce.ui.i18n.LanguageManager
 import net.minecraft.client.gui.*
 import net.minecraft.client.resources.I18n
 import net.minecraftforge.fml.client.GuiModList
 import java.awt.Color
 
 class LiquidXMainMenu : GuiScreen(), GuiYesNoCallback {
-    var drawed = false
-    var clicked = false
-
-    fun drawBtns() {
-        this.buttonList.add(GuiButton(1, this.width / 2 - (11111640 / 2), this.height / 2 - 70, 100, 23, I18n.format("Singleplayer")))
-
-        this.buttonList.add(
-                TestBtn(
-                        1,
-                        (this.width / 2) - (120 / 2),
-                        this.height / 2 - 70,
-                        130,
-                        23,
-                        I18n.format("Singleplayer"),
-                        null,
-                        2,
-                        Color(20, 20, 20, 130)
-                )
-        )
-        this.buttonList.add(
-                TestBtn(
-                        2,
-                        (this.width / 2) - (120 / 2),
-                        this.height / 2 - 40,
-                        130,
-                        23,
-                        I18n.format("Multiplayer"),
-                        null,
-                        2,
-                        Color(20, 20, 20, 130)
-                )
-        )
-
-        this.buttonList.add(
-                TestBtn(
-                        3,
-                        (this.width / 2) - (120 / 2),
-                        this.height / 2 - 10,
-                        130,
-                        23,
-                        LanguageManager.get("AltManager"),
-                        null,
-                        2,
-                        Color(20, 20, 20, 130)
-                )
-        )
-
-        this.buttonList.add(
-            TestBtn(
-                5,
-                (this.width / 2) - (120 / 2),
-                this.height / 2 + 20,
-                130,
-                23,
-                "Options",
-                null,
-                2,
-                Color(20, 20, 20, 130)
-            )
-        )
-
-
-        this.buttonList.add(
-                TestBtn(
-                        6,
-                        (this.width / 2) - (120 / 2),
-                        this.height / 2 + 50,
-                        130,
-                        23,
-                        LanguageManager.get("Background"),
-                        null,
-                        2,
-                        Color(20, 20, 20, 130)
-                )
-        )
-        this.buttonList.add(
-                TestBtn(
-                        7,
-                        (this.width / 2) - (120 / 2),
-                        this.height / 2 + 80,
-                        130,
-                        23,
-                        LanguageManager.get("Exit the game"),
-                        null,
-                        2,
-                        Color(20, 20, 20, 130)
-                )
-        )
-
-
-
-        drawed = true
-    }
-
-
     override fun initGui() {
-        drawBtns()
+        val height = (this.height / 3.5).toInt()
+        this.buttonList.add(GuiButton(1, this.width / 2 - 50, height, 100, 25, I18n.format("menu.singleplayer")))
+        this.buttonList.add(GuiButton(2, this.width / 2 - 50, height + 30, 100, 25, I18n.format("menu.multiplayer")))
+        this.buttonList.add(GuiButton(3, this.width / 2 - 50, height + 30 * 2, 100, 25, "%ui.altmanager%"))
+        this.buttonList.add(GuiButton(4, this.width / 2 - 50, height + 30 * 3, 100, 25, "%ui.mods%"))
+        this.buttonList.add(GuiButton(5, this.width / 2 - 50, height + 30 * 4, 100, 25, "%ui.background%"))
+        this.buttonList.add(GuiButton(6, this.width / 2 - 50, height + 30 * 5, 100, 25, I18n.format("menu.options")))
+        this.buttonList.add(GuiButton(7, this.width / 2 - 50, height + 30 * 6, 100, 25, I18n.format("menu.quit")))
+
         super.initGui()
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
+        val height = (this.height / 3.5).toInt()
         drawBackground(0)
-        FontLoaders.F40.drawCenteredString(
-                LiquidBounce.CLIENT_NAME,
-                this.width.toDouble() / 2 + 5,
-                this.height.toDouble() / 2 - 140,
-                if (LiquidBounce.Darkmode) {
-                    Color(255, 255, 255, 200).rgb
-                } else {
-                    Color(25, 25, 25, 170).rgb
-                }
-        )
-        FontLoaders.JELLO20.drawCenteredString(
-                "Made by vPrah and Crypt",
-                this.width.toDouble() / 2 + 5,
-                this.height.toDouble() / 2 - 107,
-                Color(1, 1, 1, 200).rgb
-        )
-        FontLoaders.JELLO20.drawCenteredString(
-                "To all our users with much love",
-                this.width.toDouble() / 2 + 5,
-                this.height.toDouble() / 2 - 98,
-                Color(1, 1, 1, 200).rgb
-        )
+        FontLoaders.JELLO40.drawCenteredString(LiquidBounce.CLIENT_NAME, (width / 2).toDouble(), (height - 60).toDouble(), Color.BLACK.rgb)
+        FontLoaders.JELLO20.drawCenteredString("Made by vPrah and Crypt", (width / 2).toDouble(), (height - 30).toDouble(), Color.BLACK.rgb)
+        FontLoaders.JELLO20.drawCenteredString("To all our users with much love", (width / 2).toDouble(), (height - 18).toDouble(), Color.BLACK.rgb)
         super.drawScreen(mouseX, mouseY, partialTicks)
-    }
-
-    override fun mouseClicked(p_mouseClicked_1_: Int, i2: Int, i3: Int) {
-        clicked = true
-        super.mouseClicked(p_mouseClicked_1_, i2, i3)
     }
 
     override fun actionPerformed(button: GuiButton) {
@@ -155,6 +42,5 @@ class LiquidXMainMenu : GuiScreen(), GuiYesNoCallback {
             7 -> mc.shutdown()
         }
     }
-
     override fun keyTyped(typedChar: Char, keyCode: Int) {}
 }
