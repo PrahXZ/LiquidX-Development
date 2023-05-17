@@ -10,19 +10,23 @@ import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
 import net.ccbluex.liquidbounce.utils.MovementUtils
 import net.ccbluex.liquidbounce.utils.RotationUtils
 import net.ccbluex.liquidbounce.features.value.*
+import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.MathHelper
 import org.lwjgl.input.Keyboard
+import org.lwjgl.opengl.GL11
+import java.awt.Color
 
 @ModuleInfo(name = "TargetStrafe",  category = ModuleCategory.MOVEMENT)
 class TargetStrafe : Module() {
-    val range = FloatValue("Range", 2.0f, 0.1f, 0.40f)
-    private val moveSpeed = FloatValue("MoveSpeed", 0.5f, 0.1f, 2.0f)
+    val range = FloatValue("Range", 2.0f, 0.1f, 6.0f)
+    private val moveSpeed = FloatValue("MoveSpeed", 0.5f, 0.1f, 0.40f)
     private val modeValue = ListValue("KeyMode", arrayOf("Jump", "None"), "Jump")
     private val safewalk = BoolValue("SafeWalk", true)
     val behind = BoolValue("Behind", false)
+   // val CircleRange = BoolValue("CircleRange", false)
     val thirdPerson = BoolValue("ThirdPerson", false)
     val killAura = LiquidBounce.moduleManager.getModule(KillAura::class.java)
     val speed = LiquidBounce.moduleManager.getModule(Speed::class.java)
@@ -36,6 +40,21 @@ class TargetStrafe : Module() {
     override fun onEnable() {
         hasChangedThirdPerson = true
         lastView = mc.gameSettings.thirdPersonView
+    }
+
+    @EventTarget
+    fun onRender3D(event: Render3DEvent) {
+        val target = getTarget()
+        if (target != null) {
+            /*
+            if (CircleRange.get()) {
+                RenderUtils.drawMarkCircleTargetStrafe(target, Color.white)
+
+            }
+
+             */
+
+        }
     }
 
     @EventTarget
