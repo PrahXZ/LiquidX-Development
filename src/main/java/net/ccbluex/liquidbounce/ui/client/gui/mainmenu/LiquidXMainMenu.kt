@@ -11,13 +11,13 @@ import java.awt.Color
 class LiquidXMainMenu : GuiScreen(), GuiYesNoCallback {
     override fun initGui() {
         val height = (this.height / 3.5).toInt()
-        this.buttonList.add(GuiButton(1, this.width / 2 - 50, height, 100, 25, I18n.format("menu.singleplayer")))
-        this.buttonList.add(GuiButton(2, this.width / 2 - 50, height + 30, 100, 25, I18n.format("menu.multiplayer")))
-        this.buttonList.add(GuiButton(3, this.width / 2 - 50, height + 30 * 2, 100, 25, "%ui.altmanager%"))
-        this.buttonList.add(GuiButton(4, this.width / 2 - 50, height + 30 * 3, 100, 25, "%ui.mods%"))
-        this.buttonList.add(GuiButton(5, this.width / 2 - 50, height + 30 * 4, 100, 25, "%ui.background%"))
-        this.buttonList.add(GuiButton(6, this.width / 2 - 50, height + 30 * 5, 100, 25, I18n.format("menu.options")))
-        this.buttonList.add(GuiButton(7, this.width / 2 - 50, height + 30 * 6, 100, 25, I18n.format("menu.quit")))
+        this.buttonList.add(GuiButton(1, this.width / 2 - 50, height, 100, 24, I18n.format("menu.singleplayer")))
+        this.buttonList.add(GuiButton(2, this.width / 2 - 50, height + 30, 100, 24, I18n.format("menu.multiplayer")))
+        this.buttonList.add(GuiButton(3, this.width / 2 - 50, height + 30 * 2, 100, 24, "%ui.altmanager%"))
+        this.buttonList.add(GuiButton(4, this.width / 2 - 50, height + 30 * 3, 100, 24, "%ui.mods%"))
+        this.buttonList.add(GuiButton(5, this.width / 2 - 50, height + 30 * 4, 100, 24, "%ui.background%"))
+        this.buttonList.add(GuiButton(6, this.width / 2 - 50, height + 30 * 5, 100, 24, I18n.format("menu.options")))
+        this.buttonList.add(GuiButton(7, this.width / 2 - 50, height + 30 * 6, 100, 24, I18n.format("menu.quit")))
 
         super.initGui()
     }
@@ -37,8 +37,8 @@ class LiquidXMainMenu : GuiScreen(), GuiYesNoCallback {
             2 -> mc.displayGuiScreen(GuiMultiplayer(this))
             3 -> mc.displayGuiScreen(GuiAltManager(this))
             4 -> mc.displayGuiScreen(GuiModList(this))
-            5 -> mc.displayGuiScreen(GuiOptions(this, mc.gameSettings))
-            6 -> mc.displayGuiScreen(GuiBackground(this))
+            6 -> mc.displayGuiScreen(GuiOptions(this, mc.gameSettings))
+            5 -> mc.displayGuiScreen(GuiBackground(this))
             7 -> mc.shutdown()
         }
     }
