@@ -232,7 +232,7 @@ object MovementUtils : MinecraftInstance() {
 
     fun setSpeed(
             moveEvent: MoveEvent,
-            moveSpeed: Int,
+            moveSpeed: Double,
             pseudoYaw: Float,
             pseudoStrafe: Double,
             pseudoForward: Double

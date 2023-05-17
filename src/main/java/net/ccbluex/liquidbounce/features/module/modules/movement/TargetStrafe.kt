@@ -26,13 +26,15 @@ class TargetStrafe : Module() {
     private val modeValue = ListValue("KeyMode", arrayOf("Jump", "None"), "Jump")
     private val safewalk = BoolValue("SafeWalk", true)
     val behind = BoolValue("Behind", false)
-    val CircleRange = BoolValue("CircleRange", false)
+  //  val CircleRange = BoolValue("CircleRange", false)
     val thirdPerson = BoolValue("ThirdPerson", false)
+    /*
     val killAura = LiquidBounce.moduleManager.getModule(KillAura::class.java)
     val speed = LiquidBounce.moduleManager.getModule(Speed::class.java)
     val longJump = LiquidBounce.moduleManager.getModule(LongJump::class.java)
-    val flight = LiquidBounce.moduleManager.getModule(Fly::class.java)
 
+   */
+    val flight = LiquidBounce.moduleManager.getModule(Fly::class.java)
     var direction = 1
     var lastView = 0
     var hasChangedThirdPerson = true
@@ -44,17 +46,16 @@ class TargetStrafe : Module() {
 
     @EventTarget
     fun onRender3D(event: Render3DEvent) {
+        /*
         val target = getTarget()
         if (target != null) {
-
             if (CircleRange.get()) {
                 RenderUtils.drawMarkCircleTargetStrafe(target, Color.white)
 
             }
-
-
-
         }
+
+         */
     }
 
     @EventTarget
@@ -89,9 +90,9 @@ class TargetStrafe : Module() {
             val rotYaw = RotationUtils.getRotationsEntity(target!!).yaw
 
             if (mc.thePlayer.getDistanceToEntity(target) <= 1.5)
-                MovementUtils.setSpeed(event, moveSpeed.get().toInt(), rotYaw, direction.toDouble(), 0.0)
+                MovementUtils.setSpeed(event, moveSpeed.get().toDouble(), rotYaw, direction.toDouble(), 0.0)
             else
-                MovementUtils.setSpeed(event, moveSpeed.get().toInt(), rotYaw, direction.toDouble(), 1.0)
+                MovementUtils.setSpeed(event, moveSpeed.get().toDouble(), rotYaw, direction.toDouble(), 1.0)
 
             if (behind.get()) {
                 val xPos: Double = target.posX + -Math.sin(Math.toRadians(target.rotationYaw.toDouble())) * -2
@@ -106,9 +107,9 @@ class TargetStrafe : Module() {
                 )).toDouble())
             } else {
                 if (mc.thePlayer.getDistanceToEntity(target) <= range.get())
-                    MovementUtils.setSpeed(event, moveSpeed.get().toInt(), rotYaw, direction.toDouble(), 0.0)
+                    MovementUtils.setSpeed(event, moveSpeed.get().toDouble(), rotYaw, direction.toDouble(), 0.0)
                 else
-                    MovementUtils.setSpeed(event, moveSpeed.get().toInt(), rotYaw, direction.toDouble(), 1.0)
+                    MovementUtils.setSpeed(event, moveSpeed.get().toDouble(), rotYaw, direction.toDouble(), 1.0)
             }
             if (safewalk.get() && checkVoid() && !flight!!.state)
                 event.isSafeWalk = true
