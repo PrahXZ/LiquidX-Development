@@ -21,12 +21,12 @@ import java.awt.Color
 
 @ModuleInfo(name = "TargetStrafe",  category = ModuleCategory.MOVEMENT)
 class TargetStrafe : Module() {
-    val range = FloatValue("Range", 2.0f, 0.1f, 6.0f)
-    private val moveSpeed = FloatValue("MoveSpeed", 0.5f, 0.1f, 0.40f)
+    val range = FloatValue("Range", 2.9f, 0.1f, 6.0f)
+    private val moveSpeed = FloatValue("MoveSpeed", 0.3f, 0.1f, 0.40f)
     private val modeValue = ListValue("KeyMode", arrayOf("Jump", "None"), "Jump")
     private val safewalk = BoolValue("SafeWalk", true)
     val behind = BoolValue("Behind", false)
-  //  val CircleRange = BoolValue("CircleRange", false)
+    //  val CircleRange = BoolValue("CircleRange", false)
     val thirdPerson = BoolValue("ThirdPerson", false)
     /*
     val killAura = LiquidBounce.moduleManager.getModule(KillAura::class.java)
@@ -75,11 +75,21 @@ class TargetStrafe : Module() {
         if (event.eventState == EventState.PRE) {
             if (mc.thePlayer.isCollidedHorizontally || safewalk.get() && checkVoid() && !flight!!.state)
                 this.direction = -this.direction
+
         }
     }
 
     @EventTarget
     fun onMove(event: MoveEvent) {
+        if(safewalk.get() && checkVoid()) {
+            event.isSafeWalk = true
+            mc.gameSettings.keyBindBack.pressed = false
+            mc.gameSettings.keyBindForward.pressed = false
+            mc.gameSettings.keyBindRight.pressed = false
+            mc.gameSettings.keyBindLeft.pressed = false
+
+        }
+
 
         if (getTarget() != null) {
             //     ClientUtils.logError("Debug " + getTarget())

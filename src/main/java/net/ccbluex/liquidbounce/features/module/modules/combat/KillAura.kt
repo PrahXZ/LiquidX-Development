@@ -596,8 +596,7 @@ class KillAura : Module() {
                 target = null
         }
 
-        if (targetModeValue.equals("Switch") && attackTimer.hasTimePassed((switchDelayValue.get()).toLong())
-        ) {
+        if (targetModeValue.equals("Switch") && attackTimer.hasTimePassed((switchDelayValue.get()).toLong())) {
             if (switchDelayValue.get() != 0) {
                 prevTargetEntities.add(currentTarget!!.entityId)
                 attackTimer.reset()
