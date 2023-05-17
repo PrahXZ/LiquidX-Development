@@ -1310,7 +1310,7 @@ public final class RenderUtils extends MinecraftInstance {
 
 
 
-    public static void drawMarkCircle(final Entity entity, final Color color) {
+    public static void drawMarkCircle(final Entity entity) {
         final RenderManager renderManager = mc.getRenderManager();
         final Timer timer = mc.timer;
         final double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * timer.renderPartialTicks
@@ -1332,7 +1332,7 @@ public final class RenderUtils extends MinecraftInstance {
         GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glLineWidth(2.0f);
-        GL11.glColor4f(color.getGreen() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 0.4f);
+        GL11.glColor4f(100f, 1f,  100f, 0.4f);
         GL11.glBegin(GL11.GL_TRIANGLES);
         int i = 0;
         double radians1, radians2, xCoord1, zCoord1, xCoord2, zCoord2;

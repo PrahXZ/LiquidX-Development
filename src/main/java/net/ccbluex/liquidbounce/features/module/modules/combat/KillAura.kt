@@ -459,7 +459,10 @@ class KillAura : Module() {
     @EventTarget
     fun onRender3D(event: Render3DEvent) {
         if (Mark.get() && hitable && !targetModeValue.get().equals("Multi", ignoreCase = true)) {
-            RenderUtils.drawMarkCircle(target, if (hitable) Color(255, 255, 144, 70) else Color(255, 0, 0, 70))
+            if (hitable) {
+                RenderUtils.drawMarkCircle(target)
+            }
+
         }
 
         if (circleValue.get()) {
