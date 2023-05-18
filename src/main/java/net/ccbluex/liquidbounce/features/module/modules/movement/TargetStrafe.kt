@@ -1,18 +1,28 @@
 // LiquidX Development by PrahXZ and Haflin with FDP Base modified. v2.0 R1
 package net.ccbluex.liquidbounce.features.module.modules.movement
 
+import akka.actor.Kill
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
+import net.ccbluex.liquidbounce.features.module.modules.player.Blink
+import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam
+import net.ccbluex.liquidbounce.features.module.modules.world.BlatantScaffold
+import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold
 import net.ccbluex.liquidbounce.utils.MovementUtils
 import net.ccbluex.liquidbounce.utils.RotationUtils
 import net.ccbluex.liquidbounce.features.value.*
+import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
+import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
+import net.minecraft.item.ItemBlock
+import net.minecraft.item.ItemBucketMilk
+import net.minecraft.item.ItemFood
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.MathHelper
 import org.lwjgl.input.Keyboard
@@ -21,13 +31,14 @@ import java.awt.Color
 
 @ModuleInfo(name = "TargetStrafe",  category = ModuleCategory.MOVEMENT)
 class TargetStrafe : Module() {
-    val range = FloatValue("Range", 2.9f, 0.1f, 6.0f)
-    private val moveSpeed = FloatValue("MoveSpeed", 0.3f, 0.1f, 0.40f)
+    val range = FloatValue("Range", 2.0f, 0.1f, 6.0f)
+    private val moveSpeed = FloatValue("MoveSpeed", 0.5f, 0.1f, 0.40f)
     private val modeValue = ListValue("KeyMode", arrayOf("Jump", "None"), "Jump")
     private val safewalk = BoolValue("SafeWalk", true)
     val behind = BoolValue("Behind", false)
-    //  val CircleRange = BoolValue("CircleRange", false)
+  //  val CircleRange = BoolValue("CircleRange", false)
     val thirdPerson = BoolValue("ThirdPerson", false)
+
     /*
     val killAura = LiquidBounce.moduleManager.getModule(KillAura::class.java)
     val speed = LiquidBounce.moduleManager.getModule(Speed::class.java)
@@ -43,6 +54,14 @@ class TargetStrafe : Module() {
         hasChangedThirdPerson = true
         lastView = mc.gameSettings.thirdPersonView
     }
+
+    private fun isAlive(entity: EntityLivingBase) = entity.isEntityAlive && entity.health > 0
+    private val cancelRun: Boolean
+        get() = mc.thePlayer.isSpectator || !isAlive(mc.thePlayer)
+                || (LiquidBounce.moduleManager[BlatantScaffold::class.java]!!.state)
+                || (LiquidBounce.moduleManager[Scaffold::class.java]!!.state)
+
+
 
     @EventTarget
     fun onRender3D(event: Render3DEvent) {
@@ -73,25 +92,24 @@ class TargetStrafe : Module() {
         }
 
         if (event.eventState == EventState.PRE) {
-            if (mc.thePlayer.isCollidedHorizontally || safewalk.get() && checkVoid() && !flight!!.state)
+            if (mc.thePlayer.isCollidedHorizontally || cancelRun ||safewalk.get() && checkVoid() && !flight!!.state)
                 this.direction = -this.direction
-
         }
     }
 
     @EventTarget
     fun onMove(event: MoveEvent) {
-        if(safewalk.get() && checkVoid()) {
-            event.isSafeWalk = true
-            mc.gameSettings.keyBindBack.pressed = false
-            mc.gameSettings.keyBindForward.pressed = false
-            mc.gameSettings.keyBindRight.pressed = false
-            mc.gameSettings.keyBindLeft.pressed = false
+        if (safewalk.get() && checkVoid() || cancelRun) {
+            if(LiquidBounce.moduleManager[KillAura::class.java]!!.hitable) {
+                event.isSafeWalk = true
+                //ClientUtils.displayChatMessage("Detectando vacio de mierda")
+            }
+
 
         }
 
 
-        if (getTarget() != null) {
+        if (getTarget() != null || cancelRun) {
             //     ClientUtils.logError("Debug " + getTarget())
             //     strafe(event, MovementUtils.getSpeed().toInt())
             //    ClientUtils.logError("Debug " + strafe(event, MovementUtils.getSpeed().toInt()))
@@ -164,30 +182,22 @@ class TargetStrafe : Module() {
 
 
     private fun checkVoid(): Boolean {
-        for (x in -1..0) {
-            for (z in -1..0) {
-                if (isVoid(x, z)) {
-                    return true
-                }
-            }
-        }
+        for (x in -1..1) for (z in -1..1) if (isVoid(x, z)) return true
         return false
     }
 
-    private fun isVoid(X: Int, Z: Int): Boolean {
-        if (mc.thePlayer.posY < 0.0) {
-            return true
-        }
+    private fun isVoid(xPos: Int, zPos: Int): Boolean {
+        if (mc.thePlayer.posY < 0.0) return true
         var off = 0
         while (off < mc.thePlayer.posY.toInt() + 2) {
-            val bb: AxisAlignedBB = mc.thePlayer.entityBoundingBox.offset(X.toDouble(), (-off).toDouble(), Z.toDouble())
-            if (mc.theWorld!!.getCollidingBoundingBoxes(mc.thePlayer as Entity, bb).isEmpty()) {
+            val bb = mc.thePlayer.entityBoundingBox.offset(xPos.toDouble(), -off.toDouble(), zPos.toDouble())
+            if (mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, bb).isEmpty()) {
                 off += 2
                 continue
             }
             return false
-            off += 2
         }
         return true
     }
+
 }
