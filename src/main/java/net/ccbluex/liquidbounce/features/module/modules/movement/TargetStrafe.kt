@@ -89,6 +89,7 @@ class TargetStrafe : Module() {
                 mc.gameSettings.thirdPersonView = lastView
                 hasChangedThirdPerson = true
             }
+
         }
 
         if (event.eventState == EventState.PRE) {
@@ -102,10 +103,13 @@ class TargetStrafe : Module() {
         if (safewalk.get() && checkVoid() || cancelRun) {
             if(LiquidBounce.moduleManager[KillAura::class.java]!!.hitable) {
                 event.isSafeWalk = true
+
                 //ClientUtils.displayChatMessage("Detectando vacio de mierda")
             }
+        }
 
-
+        if(getTarget() == null) {
+            event.isSafeWalk = false
         }
 
 
